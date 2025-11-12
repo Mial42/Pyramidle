@@ -34,19 +34,15 @@ A daily geography game where you guess the country based on its population pyram
 - **Real Demographic Data**: Using UN/World Bank population statistics
 - **Smart Hint System**: Geographic, economic, and demographic clues
 
-## Proposed Hint System
+## Hint System
 
 After each incorrect guess, reveal one hint (in order):
 
-1. **Region**: Geographic region (e.g., "Southeast Asia", "Western Europe", "Caribbean")
-2. **Population Density**: Range (e.g., "Very high: >300 per km²", "Low: 10-50 per km²")
-3. **Median Age**: Approximate value (e.g., "Median age: 35-40 years")
-4. **Income Level**: World Bank classification (e.g., "High income", "Lower-middle income")
-5. **Additional Demographic Clue**:
-   - Urbanization rate, OR
-   - Life expectancy range, OR
-   - Fertility rate, OR
-   - Major nearby countries
+1. **Total Fertility Rate (TFR)**: Average number of children per woman (e.g., "TFR: 1.5-2.0", "TFR: 4.5-5.0")
+2. **Median Age**: Approximate value (e.g., "Median age: 35-40 years")
+3. **Year Births Peaked**: The year in which the country had the most births (e.g., "Births peaked: 1985-1990")
+4. **Life Expectancy**: Average lifespan (e.g., "Life expectancy: 78-82 years")
+5. **Crude Birth Rate**: Births per 1,000 people per year (e.g., "CBR: 10-15 per 1,000")
 
 ## Tech Stack (Proposed)
 
@@ -115,24 +111,51 @@ pyramidle/
 {
   "code": "USA",
   "name": "United States",
-  "region": "Northern America",
   "population": 331900000,
-  "populationDensity": 36,
+  "totalFertilityRate": 1.78,
   "medianAge": 38.5,
-  "incomeLevel": "High income",
-  "urbanization": 82.7,
+  "yearBirthsPeaked": 1990,
   "lifeExpectancy": 78.9,
+  "crudeBirthRate": 11.0,
   "pyramid": {
     "male": {
       "0-4": 9820000,
       "5-9": 10230000,
-      // ... age groups
+      "10-14": 10580000,
+      "15-19": 10800000,
+      "20-24": 11250000,
+      "25-29": 11870000,
+      "30-34": 11420000,
+      "35-39": 10650000,
+      "40-44": 10180000,
+      "45-49": 10120000,
+      "50-54": 10630000,
+      "55-59": 11100000,
+      "60-64": 10340000,
+      "65-69": 8920000,
+      "70-74": 7230000,
+      "75-79": 5340000,
+      "80-84": 3560000,
       "85+": 2450000
     },
     "female": {
       "0-4": 9390000,
       "5-9": 9780000,
-      // ... age groups
+      "10-14": 10110000,
+      "15-19": 10320000,
+      "20-24": 10760000,
+      "25-29": 11380000,
+      "30-34": 10980000,
+      "35-39": 10320000,
+      "40-44": 9930000,
+      "45-49": 9960000,
+      "50-54": 10590000,
+      "55-59": 11200000,
+      "60-64": 10640000,
+      "65-69": 9570000,
+      "70-74": 8050000,
+      "75-79": 6320000,
+      "80-84": 4550000,
       "85+": 4120000
     }
   }
