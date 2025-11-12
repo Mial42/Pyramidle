@@ -38,10 +38,23 @@ def get_un_locations() -> List[Dict]:
     data = response.json()
 
     # Filter for countries only (not regions or aggregates)
-    countries = [
-        loc for loc in data['data']
-        if loc['locationType']['id'] == 4  # 4 = Country
-    ]
+    # Check if location has iso3 code (only countries have this)
+    countries = []
+    for loc in data['data']:
+        # Countries have iso3 codes, regions/aggregates typically don't
+        if loc.get('iso3') and loc.get('iso3') != '':
+            # Additional check: exclude if it's explicitly marked as a region
+            loc_type = loc.get('locationType')
+            if loc_type:
+                # Type 4 = Country, but API structure may vary
+                if isinstance(loc_type, dict):
+                    if loc_type.get('id') == 4:
+                        countries.append(loc)
+                elif loc_type == 4:
+                    countries.append(loc)
+            else:
+                # If no location type, include if it has iso3
+                countries.append(loc)
 
     print(f"Found {len(countries)} countries")
     return countries
