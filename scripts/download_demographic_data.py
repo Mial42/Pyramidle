@@ -26,7 +26,7 @@ WB_API_BASE = "https://api.worldbank.org/v2"
 AGE_GROUPS = [
     '0-4', '5-9', '10-14', '15-19', '20-24', '25-29',
     '30-34', '35-39', '40-44', '45-49', '50-54', '55-59',
-    '60-64', '65-69', '70-74', '75-79', '80-84', '85+'
+    '60-64', '65-69', '70-74', '75-79', '80+'
 ]
 
 # World Bank age group indicators (age-sex)
@@ -47,7 +47,7 @@ WB_AGE_INDICATORS = {
     '65-69': ('SP.POP.6569.MA', 'SP.POP.6569.FE'),
     '70-74': ('SP.POP.7074.MA', 'SP.POP.7074.FE'),
     '75-79': ('SP.POP.7579.MA', 'SP.POP.7579.FE'),
-    '80+': ('SP.POP.80UP.MA', 'SP.POP.80UP.FE'),  # Will split into 80-84 and 85+
+    '80+': ('SP.POP.80UP.MA', 'SP.POP.80UP.FE'),
 }
 
 def get_wb_countries() -> List[Dict]:
@@ -55,7 +55,7 @@ def get_wb_countries() -> List[Dict]:
     print("Fetching country list from World Bank API...")
     url = f"{WB_API_BASE}/country?format=json&per_page=300"
 
-    response = requests.get(url)
+    response = requests.get(url, timeout=15)
     response.raise_for_status()
     data = response.json()
 
@@ -90,7 +90,7 @@ def fetch_indicator_data(country_code: str, indicator: str, year: int = 2022) ->
         url = f"{WB_API_BASE}/country/{country_code}/indicator/{indicator}?format=json&date={y}"
 
         try:
-            response = requests.get(url)
+            response = requests.get(url, timeout=10)
             response.raise_for_status()
             data = response.json()
 
@@ -99,8 +99,11 @@ def fetch_indicator_data(country_code: str, indicator: str, year: int = 2022) ->
                     if record.get('value') is not None:
                         return float(record['value'])
 
-            time.sleep(0.05)  # Small delay to avoid rate limiting
+            time.sleep(0.1)  # Delay to avoid rate limiting
 
+        except requests.exceptions.Timeout:
+            print(f"  Timeout fetching {indicator} for {country_code} year {y}")
+            continue
         except Exception as e:
             continue
 
@@ -130,24 +133,9 @@ def get_population_pyramid(country_code: str) -> Optional[Dict]:
             missing_groups.append(age_group)
             continue
 
-        # Handle the 80+ group - split into 80-84 and 85+
-        if age_group == '80+':
-            # Approximate split: 60% in 80-84, 40% in 85+
-            male_80_84 = int(male_value * 0.6)
-            male_85_plus = int(male_value * 0.4)
-            female_80_84 = int(female_value * 0.6)
-            female_85_plus = int(female_value * 0.4)
-
-            pyramid['male']['80-84'] = male_80_84
-            pyramid['male']['85+'] = male_85_plus
-            pyramid['female']['80-84'] = female_80_84
-            pyramid['female']['85+'] = female_85_plus
-
-            total_pop += int(male_value + female_value)
-        else:
-            pyramid['male'][age_group] = int(male_value)
-            pyramid['female'][age_group] = int(female_value)
-            total_pop += int(male_value + female_value)
+        pyramid['male'][age_group] = int(male_value)
+        pyramid['female'][age_group] = int(female_value)
+        total_pop += int(male_value + female_value)
 
     # Check if we have enough data
     if len(missing_groups) > 5:  # Too many missing groups
@@ -174,7 +162,7 @@ def calculate_median_age(pyramid: Dict) -> float:
     age_midpoints = {
         '0-4': 2, '5-9': 7, '10-14': 12, '15-19': 17, '20-24': 22, '25-29': 27,
         '30-34': 32, '35-39': 37, '40-44': 42, '45-49': 47, '50-54': 52, '55-59': 57,
-        '60-64': 62, '65-69': 67, '70-74': 72, '75-79': 77, '80-84': 82, '85+': 87
+        '60-64': 62, '65-69': 67, '70-74': 72, '75-79': 77, '80+': 85
     }
 
     total_pop = 0
@@ -205,8 +193,8 @@ def get_year_births_peaked(country_code: str) -> int:
     pop_url = f"{WB_API_BASE}/country/{country_code}/indicator/SP.POP.TOTL?format=json&date=1960:2023&per_page=100"
 
     try:
-        cbr_response = requests.get(cbr_url)
-        pop_response = requests.get(pop_url)
+        cbr_response = requests.get(cbr_url, timeout=15)
+        pop_response = requests.get(pop_url, timeout=15)
 
         cbr_data = cbr_response.json()[1] if len(cbr_response.json()) > 1 else []
         pop_data = pop_response.json()[1] if len(pop_response.json()) > 1 else []
