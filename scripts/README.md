@@ -6,6 +6,8 @@ This directory contains scripts to download and process demographic data for all
 
 1. **`download_demographic_data.py`**: Downloads complete demographic data from World Bank API
 2. **`update_year_births_peaked.py`**: Updates year births peaked using actual births data
+3. **`fix_missing_data.py`**: Fixes country JSONs with missing or default values
+4. **`add_data_year.py`**: Adds dataYear field to existing country JSONs
 
 ## 1. Download Demographic Data
 
@@ -192,4 +194,109 @@ python scripts/update_year_births_peaked.py
 # 2a. Download CSV manually from Our World in Data
 # 2b. Run with local file
 python scripts/update_year_births_peaked.py --file births_data.csv
+```
+
+## 3. Fix Missing Data
+
+The `fix_missing_data.py` script fixes country JSON files that have missing or default values.
+
+### What It Fixes
+
+1. **Age pyramid values of 0**: Sometimes the API fails to return data for specific age groups, resulting in 0 values
+2. **yearBirthsPeaked = 2000**: When the births peak calculation fails, it defaults to 2000
+
+### Why This Happens
+
+- Network timeouts during initial download
+- Temporary API unavailability for specific indicators
+- Rate limiting causing some requests to fail
+- Missing data for certain country/indicator combinations
+
+### Usage
+
+```bash
+python scripts/fix_missing_data.py
+```
+
+### What It Does
+
+1. **Scans all country JSON files** for issues:
+   - Checks each age group in the pyramid for 0 values
+   - Checks if yearBirthsPeaked is 2000 (the default fallback)
+
+2. **Reports all issues found**:
+   ```
+   Found 12 files with issues
+     France (FRA): 1 missing age groups
+     Afghanistan (AFG): default births peak year
+     Somalia (SOM): 3 missing age groups, default births peak year
+   ```
+
+3. **Fixes each issue**:
+   - Re-fetches only the missing age group data from World Bank API
+   - Re-calculates yearBirthsPeaked if it's 2000
+   - Updates the JSON file with corrected values
+   - Preserves all other data unchanged
+
+### Example Output
+
+```
+France (FRA):
+  Missing age groups: 70-74
+    Fetching 70-74... ✓ Fixed (M: 1,545,892, F: 1,789,234)
+
+Afghanistan (AFG):
+  Year births peaked is default (2000), recalculating...
+    Fetching historical births data...
+    ✓ Updated to 2018
+```
+
+### When to Use
+
+Run this script after:
+- Initial data download completes
+- You notice countries with 0 values in pyramids
+- Many countries showing yearBirthsPeaked = 2000
+
+### Performance
+
+- Much faster than re-downloading everything
+- Only makes API calls for missing data
+- Typical runtime: 1-3 minutes for fixing 10-20 countries
+
+## 4. Add Data Year
+
+The `add_data_year.py` script adds the `dataYear` field to existing country JSON files.
+
+### Usage
+
+```bash
+python scripts/add_data_year.py
+```
+
+### What It Does
+
+- Queries World Bank API to find the actual year of demographic data for each country
+- Adds `dataYear` field to JSON files that don't have it
+- Makes only 1 API call per country (checks population total indicator)
+
+### When to Use
+
+- After downloading data with older version of script
+- If you have country JSONs without `dataYear` field
+
+## Complete Workflow
+
+```bash
+# Step 1: Download all demographic data
+python scripts/download_demographic_data.py
+
+# Step 2: Fix any missing/default values
+python scripts/fix_missing_data.py
+
+# Step 3: Update year births peaked with actual births data
+python scripts/update_year_births_peaked.py --file births_data.csv
+
+# Step 4 (optional): Add dataYear if missing
+python scripts/add_data_year.py
 ```
