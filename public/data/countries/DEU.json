@@ -1,6 +1,7 @@
 {
   "code": "DEU",
   "name": "Germany",
+  "dataYear": 2022,
   "population": 83200000,
   "totalFertilityRate": 1.57,
   "medianAge": 45.9,

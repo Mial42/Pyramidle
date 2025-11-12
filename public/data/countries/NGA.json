@@ -1,6 +1,7 @@
 {
   "code": "NGA",
   "name": "Nigeria",
+  "dataYear": 2022,
   "population": 206100000,
   "totalFertilityRate": 5.32,
   "medianAge": 18.6,

@@ -86,10 +86,13 @@ def get_wb_countries() -> List[Dict]:
     print(f"Found {len(countries)} countries")
     return countries
 
-def fetch_indicator_data(country_code: str, indicator: str, year_range: str = "2015:2024") -> Optional[float]:
+def fetch_indicator_data(country_code: str, indicator: str, year_range: str = "2015:2024") -> Tuple[Optional[float], Optional[int]]:
     """
     Fetch a single indicator value for a country.
-    Fetches time series data and returns the most recent available value.
+    Fetches time series data and returns the most recent available value and year.
+
+    Returns:
+        Tuple of (value, year) or (None, None) if not found
     """
     url = f"{WB_API_BASE}/country/{country_code}/indicator/{indicator}?format=json&date={year_range}&per_page=20"
 
@@ -102,7 +105,9 @@ def fetch_indicator_data(country_code: str, indicator: str, year_range: str = "2
             # Data is returned sorted by year descending (most recent first)
             for record in data[1]:
                 if record.get('value') is not None:
-                    return float(record['value'])
+                    value = float(record['value'])
+                    year = int(record['date'])
+                    return (value, year)
 
         time.sleep(0.1)  # Delay to avoid rate limiting
 
@@ -111,7 +116,7 @@ def fetch_indicator_data(country_code: str, indicator: str, year_range: str = "2
     except Exception as e:
         print(f"  Error fetching {indicator} for {country_code}: {e}")
 
-    return None
+    return (None, None)
 
 def get_population_pyramid(country_code: str) -> Optional[Dict]:
     """
@@ -129,9 +134,14 @@ def get_population_pyramid(country_code: str) -> Optional[Dict]:
     missing_groups = []
 
     # Fetch all age groups
+    data_year = None
     for age_group, (male_indicator, female_indicator) in WB_AGE_INDICATORS.items():
-        male_value = fetch_indicator_data(country_code, male_indicator)
-        female_value = fetch_indicator_data(country_code, female_indicator)
+        male_value, male_year = fetch_indicator_data(country_code, male_indicator)
+        female_value, female_year = fetch_indicator_data(country_code, female_indicator)
+
+        # Track the data year (use first available)
+        if data_year is None and male_year is not None:
+            data_year = male_year
 
         if male_value is None or female_value is None:
             missing_groups.append(age_group)
@@ -155,7 +165,8 @@ def get_population_pyramid(country_code: str) -> Optional[Dict]:
 
     return {
         'pyramid': pyramid,
-        'population': total_pop
+        'population': total_pop,
+        'dataYear': data_year
     }
 
 def calculate_median_age(pyramid: Dict) -> float:
@@ -262,15 +273,18 @@ def create_country_data(country: Dict) -> Optional[Dict]:
 
     # Get demographic indicators
     print(f"  Fetching demographic indicators for {code}...")
-    tfr = fetch_indicator_data(code, 'SP.DYN.TFRT.IN')
-    life_exp = fetch_indicator_data(code, 'SP.DYN.LE00.IN')
-    cbr = fetch_indicator_data(code, 'SP.DYN.CBRT.IN')
+    tfr, tfr_year = fetch_indicator_data(code, 'SP.DYN.TFRT.IN')
+    life_exp, life_exp_year = fetch_indicator_data(code, 'SP.DYN.LE00.IN')
+    cbr, cbr_year = fetch_indicator_data(code, 'SP.DYN.CBRT.IN')
 
     # Calculate median age from pyramid
     median_age = calculate_median_age(pyramid_data['pyramid'])
 
     # Get year births peaked
     year_births_peaked = get_year_births_peaked(code)
+
+    # Use the data year from pyramid data (most reliable)
+    data_year = pyramid_data.get('dataYear', 2022)
 
     # Use defaults if indicators missing
     if tfr is None:
@@ -286,6 +300,7 @@ def create_country_data(country: Dict) -> Optional[Dict]:
     country_data = {
         'code': code,
         'name': name,
+        'dataYear': data_year,
         'population': pyramid_data['population'],
         'totalFertilityRate': round(tfr, 2),
         'medianAge': round(median_age, 1),

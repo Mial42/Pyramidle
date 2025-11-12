@@ -1,6 +1,7 @@
 {
   "code": "USA",
   "name": "United States",
+  "dataYear": 2022,
   "population": 331900000,
   "totalFertilityRate": 1.78,
   "medianAge": 38.5,

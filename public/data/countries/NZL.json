@@ -1,6 +1,7 @@
 {
   "code": "NZL",
   "name": "New Zealand",
+  "dataYear": 2022,
   "population": 5100000,
   "totalFertilityRate": 1.86,
   "medianAge": 37.4,
