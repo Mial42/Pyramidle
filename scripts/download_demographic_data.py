@@ -22,6 +22,12 @@ from pathlib import Path
 # World Bank API endpoint
 WB_API_BASE = "https://api.worldbank.org/v2"
 
+# HTTP headers for API requests
+HEADERS = {
+    'User-Agent': 'Pyramidle/1.0 (Educational Project)',
+    'Accept': 'application/json'
+}
+
 # Age groups for population pyramid
 AGE_GROUPS = [
     '0-4', '5-9', '10-14', '15-19', '20-24', '25-29',
@@ -55,7 +61,7 @@ def get_wb_countries() -> List[Dict]:
     print("Fetching country list from World Bank API...")
     url = f"{WB_API_BASE}/country?format=json&per_page=300"
 
-    response = requests.get(url, timeout=15)
+    response = requests.get(url, headers=HEADERS, timeout=15)
     response.raise_for_status()
     data = response.json()
 
@@ -80,32 +86,30 @@ def get_wb_countries() -> List[Dict]:
     print(f"Found {len(countries)} countries")
     return countries
 
-def fetch_indicator_data(country_code: str, indicator: str, year: int = 2022) -> Optional[float]:
+def fetch_indicator_data(country_code: str, indicator: str, year_range: str = "2015:2024") -> Optional[float]:
     """
     Fetch a single indicator value for a country.
-    Tries multiple recent years if specified year not available.
+    Fetches time series data and returns the most recent available value.
     """
-    # Try last 5 years if data not available for specified year
-    for y in range(year, year - 5, -1):
-        url = f"{WB_API_BASE}/country/{country_code}/indicator/{indicator}?format=json&date={y}"
+    url = f"{WB_API_BASE}/country/{country_code}/indicator/{indicator}?format=json&date={year_range}&per_page=20"
 
-        try:
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
-            data = response.json()
+    try:
+        response = requests.get(url, headers=HEADERS, timeout=10)
+        response.raise_for_status()
+        data = response.json()
 
-            if len(data) > 1 and data[1]:
-                for record in data[1]:
-                    if record.get('value') is not None:
-                        return float(record['value'])
+        if len(data) > 1 and data[1]:
+            # Data is returned sorted by year descending (most recent first)
+            for record in data[1]:
+                if record.get('value') is not None:
+                    return float(record['value'])
 
-            time.sleep(0.1)  # Delay to avoid rate limiting
+        time.sleep(0.1)  # Delay to avoid rate limiting
 
-        except requests.exceptions.Timeout:
-            print(f"  Timeout fetching {indicator} for {country_code} year {y}")
-            continue
-        except Exception as e:
-            continue
+    except requests.exceptions.Timeout:
+        print(f"  Timeout fetching {indicator} for {country_code}")
+    except Exception as e:
+        print(f"  Error fetching {indicator} for {country_code}: {e}")
 
     return None
 
@@ -189,40 +193,58 @@ def get_year_births_peaked(country_code: str) -> int:
     print(f"  Fetching historical births for {country_code}...")
 
     # Fetch historical CBR and population data
-    cbr_url = f"{WB_API_BASE}/country/{country_code}/indicator/SP.DYN.CBRT.IN?format=json&date=1960:2023&per_page=100"
-    pop_url = f"{WB_API_BASE}/country/{country_code}/indicator/SP.POP.TOTL?format=json&date=1960:2023&per_page=100"
+    cbr_url = f"{WB_API_BASE}/country/{country_code}/indicator/SP.DYN.CBRT.IN?format=json&date=1960:2024&per_page=100"
+    pop_url = f"{WB_API_BASE}/country/{country_code}/indicator/SP.POP.TOTL?format=json&date=1960:2024&per_page=100"
 
     try:
-        cbr_response = requests.get(cbr_url, timeout=15)
-        pop_response = requests.get(pop_url, timeout=15)
+        cbr_response = requests.get(cbr_url, headers=HEADERS, timeout=15)
+        pop_response = requests.get(pop_url, headers=HEADERS, timeout=15)
 
-        cbr_data = cbr_response.json()[1] if len(cbr_response.json()) > 1 else []
-        pop_data = pop_response.json()[1] if len(pop_response.json()) > 1 else []
+        cbr_response.raise_for_status()
+        pop_response.raise_for_status()
+
+        cbr_json = cbr_response.json()
+        pop_json = pop_response.json()
+
+        cbr_data = cbr_json[1] if len(cbr_json) > 1 and cbr_json[1] else []
+        pop_data = pop_json[1] if len(pop_json) > 1 and pop_json[1] else []
 
         if not cbr_data or not pop_data:
+            print(f"  Warning: No CBR or population data for {country_code}")
             return 2000  # Default
 
         # Create dictionaries for easy lookup
-        cbr_by_year = {d['date']: d['value'] for d in cbr_data if d.get('value')}
-        pop_by_year = {d['date']: d['value'] for d in pop_data if d.get('value')}
+        cbr_by_year = {}
+        for d in cbr_data:
+            if d.get('value') is not None:
+                cbr_by_year[d['date']] = d['value']
+
+        pop_by_year = {}
+        for d in pop_data:
+            if d.get('value') is not None:
+                pop_by_year[d['date']] = d['value']
 
         # Calculate births for each year
         births_by_year = {}
         for year in cbr_by_year:
             if year in pop_by_year:
                 # CBR is per 1,000, so divide by 1000
-                births = (cbr_by_year[year] / 1000) * pop_by_year[year]
+                births = (cbr_by_year[year] / 1000.0) * pop_by_year[year]
                 births_by_year[year] = births
 
         if not births_by_year:
+            print(f"  Warning: No overlapping birth data for {country_code}")
             return 2000
 
         # Find year with max births
         max_year = max(births_by_year, key=births_by_year.get)
+        print(f"  Births peaked in {max_year} with {births_by_year[max_year]:,.0f} births")
         return int(max_year)
 
     except Exception as e:
         print(f"  Warning: Could not calculate births peak for {country_code}: {e}")
+        import traceback
+        traceback.print_exc()
         return 2000
 
 def create_country_data(country: Dict) -> Optional[Dict]:
