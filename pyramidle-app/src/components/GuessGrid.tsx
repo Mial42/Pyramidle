@@ -77,13 +77,11 @@ export const GuessGrid: React.FC<GuessGridProps> = ({
             alignItems: 'center',
           }}
         >
-          {hint ? (
+          {hint && (
             <>
               <strong style={{ marginRight: '8px' }}>{hint.label}:</strong>
               <span>{hint.value}</span>
             </>
-          ) : (
-            <span style={{ fontStyle: 'italic' }}>Hint will appear here</span>
           )}
         </div>
       </div>
