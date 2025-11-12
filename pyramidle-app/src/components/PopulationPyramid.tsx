@@ -35,27 +35,34 @@ export const PopulationPyramid: React.FC<PopulationPyramidProps> = ({
   pyramidData,
   totalPopulation,
 }) => {
+  // Reverse age groups so 85+ is at top, 0-4 at bottom
+  const reversedAgeGroups = [...AGE_GROUPS].reverse();
+
   // Prepare data for the pyramid chart
   // Male data will be negative (left side), female data positive (right side)
-  const maleData = AGE_GROUPS.map(age => -pyramidData.male[age]);
-  const femaleData = AGE_GROUPS.map(age => pyramidData.female[age]);
+  const maleData = reversedAgeGroups.map(age => -pyramidData.male[age]);
+  const femaleData = reversedAgeGroups.map(age => pyramidData.female[age]);
 
   const data = {
-    labels: AGE_GROUPS,
+    labels: reversedAgeGroups,
     datasets: [
       {
         label: 'Male',
         data: maleData,
         backgroundColor: 'rgba(54, 162, 235, 0.7)',
         borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1,
+        borderWidth: 0,
+        barPercentage: 1.0,
+        categoryPercentage: 1.0,
       },
       {
         label: 'Female',
         data: femaleData,
         backgroundColor: 'rgba(255, 99, 132, 0.7)',
         borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 1,
+        borderWidth: 0,
+        barPercentage: 1.0,
+        categoryPercentage: 1.0,
       },
     ],
   };
@@ -88,6 +95,7 @@ export const PopulationPyramid: React.FC<PopulationPyramidProps> = ({
     },
     scales: {
       x: {
+        stacked: false,
         ticks: {
           callback: function(value: any) {
             // Show absolute values on x-axis
@@ -99,6 +107,7 @@ export const PopulationPyramid: React.FC<PopulationPyramidProps> = ({
         },
       },
       y: {
+        stacked: true,
         grid: {
           display: false,
         },
