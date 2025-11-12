@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-Download demographic data for all countries from UN and World Bank APIs.
+Download demographic data for all countries from World Bank Open Data API.
 Generates JSON files for the Pyramidle game.
 
-Data sources:
-- UN World Population Prospects 2022: Age/sex data, fertility, mortality
-- World Bank Open Data: Additional indicators and validation
+Data source: World Bank Open Data API
+- Most recent available data (typically 2022-2023)
+- Age/sex population pyramids
+- Fertility, mortality, and birth indicators
 
 Requirements:
-    pip install requests pandas
+    pip install requests
 """
 
 import json
 import os
 import time
 import requests
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from pathlib import Path
 
-# API endpoints
-UN_API_BASE = "https://population.un.org/dataportalapi/api/v1"
+# World Bank API endpoint
 WB_API_BASE = "https://api.worldbank.org/v2"
 
 # Age groups for population pyramid
@@ -29,259 +29,260 @@ AGE_GROUPS = [
     '60-64', '65-69', '70-74', '75-79', '80-84', '85+'
 ]
 
-def get_un_locations() -> List[Dict]:
-    """Get list of countries from UN API."""
-    print("Fetching country list from UN API...")
-    url = f"{UN_API_BASE}/locations"
+# World Bank age group indicators (age-sex)
+WB_AGE_INDICATORS = {
+    '0-4': ('SP.POP.0004.MA', 'SP.POP.0004.FE'),
+    '5-9': ('SP.POP.0509.MA', 'SP.POP.0509.FE'),
+    '10-14': ('SP.POP.1014.MA', 'SP.POP.1014.FE'),
+    '15-19': ('SP.POP.1519.MA', 'SP.POP.1519.FE'),
+    '20-24': ('SP.POP.2024.MA', 'SP.POP.2024.FE'),
+    '25-29': ('SP.POP.2529.MA', 'SP.POP.2529.FE'),
+    '30-34': ('SP.POP.3034.MA', 'SP.POP.3034.FE'),
+    '35-39': ('SP.POP.3539.MA', 'SP.POP.3539.FE'),
+    '40-44': ('SP.POP.4044.MA', 'SP.POP.4044.FE'),
+    '45-49': ('SP.POP.4549.MA', 'SP.POP.4549.FE'),
+    '50-54': ('SP.POP.5054.MA', 'SP.POP.5054.FE'),
+    '55-59': ('SP.POP.5559.MA', 'SP.POP.5559.FE'),
+    '60-64': ('SP.POP.6064.MA', 'SP.POP.6064.FE'),
+    '65-69': ('SP.POP.6569.MA', 'SP.POP.6569.FE'),
+    '70-74': ('SP.POP.7074.MA', 'SP.POP.7074.FE'),
+    '75-79': ('SP.POP.7579.MA', 'SP.POP.7579.FE'),
+    '80+': ('SP.POP.80UP.MA', 'SP.POP.80UP.FE'),  # Will split into 80-84 and 85+
+}
+
+def get_wb_countries() -> List[Dict]:
+    """Get list of countries from World Bank API."""
+    print("Fetching country list from World Bank API...")
+    url = f"{WB_API_BASE}/country?format=json&per_page=300"
+
     response = requests.get(url)
     response.raise_for_status()
     data = response.json()
 
-    # Filter for countries only (not regions or aggregates)
-    # Check if location has iso3 code (only countries have this)
+    # World Bank returns [metadata, data]
+    if len(data) < 2:
+        raise Exception("Unexpected World Bank API response format")
+
+    countries_data = data[1]
+
+    # Filter for actual countries (not aggregates/regions)
     countries = []
-    for loc in data['data']:
-        # Countries have iso3 codes, regions/aggregates typically don't
-        if loc.get('iso3') and loc.get('iso3') != '':
-            # Additional check: exclude if it's explicitly marked as a region
-            loc_type = loc.get('locationType')
-            if loc_type:
-                # Type 4 = Country, but API structure may vary
-                if isinstance(loc_type, dict):
-                    if loc_type.get('id') == 4:
-                        countries.append(loc)
-                elif loc_type == 4:
-                    countries.append(loc)
-            else:
-                # If no location type, include if it has iso3
-                countries.append(loc)
+    for country in countries_data:
+        # Exclude aggregates and regions
+        if country.get('region', {}).get('id') != 'NA':  # NA = Not applicable (aggregates)
+            # Only include countries with ISO3 codes
+            if country.get('id') and len(country.get('id', '')) == 3:
+                countries.append({
+                    'code': country['id'],
+                    'name': country['name'],
+                })
 
     print(f"Found {len(countries)} countries")
     return countries
 
-def get_population_by_age_sex(location_id: int, iso_code: str) -> Optional[Dict]:
+def fetch_indicator_data(country_code: str, indicator: str, year: int = 2022) -> Optional[float]:
     """
-    Get population pyramid data from UN API.
-    Returns dict with male/female age group populations.
+    Fetch a single indicator value for a country.
+    Tries multiple recent years if specified year not available.
     """
-    print(f"  Fetching age/sex data for {iso_code}...")
+    # Try last 5 years if data not available for specified year
+    for y in range(year, year - 5, -1):
+        url = f"{WB_API_BASE}/country/{country_code}/indicator/{indicator}?format=json&date={y}"
 
-    # UN API: Population by age and sex (indicator 47 = Population by 5-year age groups and sex)
-    url = f"{UN_API_BASE}/data/indicators/47/locations/{location_id}/start/2022/end/2022"
-
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-
-        if 'data' not in data or len(data['data']) == 0:
-            print(f"  Warning: No age/sex data for {iso_code}")
-            return None
-
-        pyramid = {
-            'male': {},
-            'female': {}
-        }
-
-        total_pop = 0
-
-        for record in data['data']:
-            age_label = record.get('ageLabel', '')
-            sex = record.get('sex', '')
-            value = record.get('value', 0)
-
-            # Map UN age labels to our format
-            age_group = map_age_label(age_label)
-
-            if age_group and sex in ['Male', 'Female']:
-                sex_key = sex.lower()
-                # Value is in thousands, convert to actual population
-                population = int(value * 1000)
-
-                if age_group in pyramid[sex_key]:
-                    pyramid[sex_key][age_group] += population
-                else:
-                    pyramid[sex_key][age_group] = population
-
-                total_pop += population
-
-        # Ensure all age groups are present
-        for age_group in AGE_GROUPS:
-            if age_group not in pyramid['male']:
-                pyramid['male'][age_group] = 0
-            if age_group not in pyramid['female']:
-                pyramid['female'][age_group] = 0
-
-        return {
-            'pyramid': pyramid,
-            'population': total_pop
-        }
-
-    except Exception as e:
-        print(f"  Error fetching age/sex data for {iso_code}: {e}")
-        return None
-
-def map_age_label(un_label: str) -> Optional[str]:
-    """Map UN age labels to our age group format."""
-    # UN uses labels like "0-4", "5-9", ..., "100+"
-    # We use the same except "85+" for 85 and above
-
-    if not un_label:
-        return None
-
-    if un_label in AGE_GROUPS:
-        return un_label
-
-    # Handle 85+ and above age groups
-    if un_label in ['85-89', '90-94', '95-99', '100+']:
-        return '85+'
-
-    return un_label if un_label in AGE_GROUPS else None
-
-def get_demographic_indicators(location_id: int, iso_code: str) -> Dict:
-    """Get TFR, life expectancy, median age from UN API."""
-    print(f"  Fetching demographic indicators for {iso_code}...")
-
-    indicators = {
-        'totalFertilityRate': None,
-        'lifeExpectancy': None,
-        'medianAge': None,
-    }
-
-    # Indicator IDs:
-    # 68 = Total fertility rate
-    # 69 = Life expectancy at birth (both sexes)
-    # 31 = Median age
-
-    indicator_map = {
-        68: 'totalFertilityRate',
-        69: 'lifeExpectancy',
-        31: 'medianAge',
-    }
-
-    for indicator_id, key in indicator_map.items():
         try:
-            url = f"{UN_API_BASE}/data/indicators/{indicator_id}/locations/{location_id}/start/2022/end/2022"
             response = requests.get(url)
             response.raise_for_status()
             data = response.json()
 
-            if 'data' in data and len(data['data']) > 0:
-                # Get the most recent value
-                value = data['data'][0].get('value')
-                if value is not None:
-                    indicators[key] = round(float(value), 2)
+            if len(data) > 1 and data[1]:
+                for record in data[1]:
+                    if record.get('value') is not None:
+                        return float(record['value'])
 
-            time.sleep(0.1)  # Rate limiting
+            time.sleep(0.05)  # Small delay to avoid rate limiting
 
         except Exception as e:
-            print(f"  Warning: Could not fetch indicator {indicator_id} for {iso_code}: {e}")
+            continue
 
-    return indicators
+    return None
 
-def get_births_data(location_id: int, iso_code: str) -> Optional[int]:
+def get_population_pyramid(country_code: str) -> Optional[Dict]:
     """
-    Get historical births data to find year births peaked.
-    Returns the year with the highest number of births.
+    Get population pyramid data from World Bank.
+    Returns dict with male/female age group populations and total.
     """
-    print(f"  Fetching births history for {iso_code}...")
+    print(f"  Fetching age/sex data for {country_code}...")
+
+    pyramid = {
+        'male': {},
+        'female': {}
+    }
+
+    total_pop = 0
+    missing_groups = []
+
+    # Fetch all age groups
+    for age_group, (male_indicator, female_indicator) in WB_AGE_INDICATORS.items():
+        male_value = fetch_indicator_data(country_code, male_indicator)
+        female_value = fetch_indicator_data(country_code, female_indicator)
+
+        if male_value is None or female_value is None:
+            missing_groups.append(age_group)
+            continue
+
+        # Handle the 80+ group - split into 80-84 and 85+
+        if age_group == '80+':
+            # Approximate split: 60% in 80-84, 40% in 85+
+            male_80_84 = int(male_value * 0.6)
+            male_85_plus = int(male_value * 0.4)
+            female_80_84 = int(female_value * 0.6)
+            female_85_plus = int(female_value * 0.4)
+
+            pyramid['male']['80-84'] = male_80_84
+            pyramid['male']['85+'] = male_85_plus
+            pyramid['female']['80-84'] = female_80_84
+            pyramid['female']['85+'] = female_85_plus
+
+            total_pop += int(male_value + female_value)
+        else:
+            pyramid['male'][age_group] = int(male_value)
+            pyramid['female'][age_group] = int(female_value)
+            total_pop += int(male_value + female_value)
+
+    # Check if we have enough data
+    if len(missing_groups) > 5:  # Too many missing groups
+        print(f"  Warning: {country_code} missing {len(missing_groups)} age groups")
+        return None
+
+    # Fill in missing groups with 0
+    for age_group in AGE_GROUPS:
+        if age_group not in pyramid['male']:
+            pyramid['male'][age_group] = 0
+        if age_group not in pyramid['female']:
+            pyramid['female'][age_group] = 0
+
+    return {
+        'pyramid': pyramid,
+        'population': total_pop
+    }
+
+def calculate_median_age(pyramid: Dict) -> float:
+    """
+    Calculate approximate median age from population pyramid.
+    Uses midpoint of age groups weighted by population.
+    """
+    age_midpoints = {
+        '0-4': 2, '5-9': 7, '10-14': 12, '15-19': 17, '20-24': 22, '25-29': 27,
+        '30-34': 32, '35-39': 37, '40-44': 42, '45-49': 47, '50-54': 52, '55-59': 57,
+        '60-64': 62, '65-69': 67, '70-74': 72, '75-79': 77, '80-84': 82, '85+': 87
+    }
+
+    total_pop = 0
+    weighted_sum = 0
+
+    for age_group in AGE_GROUPS:
+        male_pop = pyramid['male'].get(age_group, 0)
+        female_pop = pyramid['female'].get(age_group, 0)
+        pop = male_pop + female_pop
+
+        total_pop += pop
+        weighted_sum += pop * age_midpoints[age_group]
+
+    if total_pop == 0:
+        return 30.0  # Default
+
+    return weighted_sum / total_pop
+
+def get_year_births_peaked(country_code: str) -> int:
+    """
+    Find year with highest births by looking at crude birth rate
+    multiplied by population over time.
+    """
+    print(f"  Fetching historical births for {country_code}...")
+
+    # Fetch historical CBR and population data
+    cbr_url = f"{WB_API_BASE}/country/{country_code}/indicator/SP.DYN.CBRT.IN?format=json&date=1960:2023&per_page=100"
+    pop_url = f"{WB_API_BASE}/country/{country_code}/indicator/SP.POP.TOTL?format=json&date=1960:2023&per_page=100"
 
     try:
-        # Indicator 19 = Births
-        url = f"{UN_API_BASE}/data/indicators/19/locations/{location_id}/start/1950/end/2022"
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
+        cbr_response = requests.get(cbr_url)
+        pop_response = requests.get(pop_url)
 
-        if 'data' not in data or len(data['data']) == 0:
-            return None
+        cbr_data = cbr_response.json()[1] if len(cbr_response.json()) > 1 else []
+        pop_data = pop_response.json()[1] if len(pop_response.json()) > 1 else []
 
-        # Find year with maximum births
-        max_births = 0
-        max_year = None
+        if not cbr_data or not pop_data:
+            return 2000  # Default
 
-        for record in data['data']:
-            year = record.get('timeLabel')
-            value = record.get('value', 0)
+        # Create dictionaries for easy lookup
+        cbr_by_year = {d['date']: d['value'] for d in cbr_data if d.get('value')}
+        pop_by_year = {d['date']: d['value'] for d in pop_data if d.get('value')}
 
-            if value > max_births:
-                max_births = value
-                max_year = int(year)
+        # Calculate births for each year
+        births_by_year = {}
+        for year in cbr_by_year:
+            if year in pop_by_year:
+                # CBR is per 1,000, so divide by 1000
+                births = (cbr_by_year[year] / 1000) * pop_by_year[year]
+                births_by_year[year] = births
 
-        return max_year
+        if not births_by_year:
+            return 2000
 
-    except Exception as e:
-        print(f"  Warning: Could not fetch births data for {iso_code}: {e}")
-        return None
-
-def get_crude_birth_rate(location_id: int, iso_code: str) -> Optional[float]:
-    """Get crude birth rate from UN API."""
-    print(f"  Fetching crude birth rate for {iso_code}...")
-
-    try:
-        # Indicator 21 = Crude birth rate
-        url = f"{UN_API_BASE}/data/indicators/21/locations/{location_id}/start/2022/end/2022"
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-
-        if 'data' in data and len(data['data']) > 0:
-            value = data['data'][0].get('value')
-            if value is not None:
-                return round(float(value), 2)
-
-        return None
+        # Find year with max births
+        max_year = max(births_by_year, key=births_by_year.get)
+        return int(max_year)
 
     except Exception as e:
-        print(f"  Warning: Could not fetch CBR for {iso_code}: {e}")
-        return None
+        print(f"  Warning: Could not calculate births peak for {country_code}: {e}")
+        return 2000
 
-def create_country_data(location: Dict) -> Optional[Dict]:
-    """Create complete country data JSON."""
-    iso_code = location.get('iso3')
-    name = location.get('name')
-    location_id = location.get('id')
+def create_country_data(country: Dict) -> Optional[Dict]:
+    """Create complete country data JSON from World Bank data."""
+    code = country['code']
+    name = country['name']
 
-    if not iso_code or not name or not location_id:
-        return None
-
-    print(f"\nProcessing {name} ({iso_code})...")
+    print(f"\nProcessing {name} ({code})...")
 
     # Get population pyramid
-    pop_data = get_population_by_age_sex(location_id, iso_code)
-    if not pop_data:
-        print(f"  Skipping {iso_code}: No population data available")
+    pyramid_data = get_population_pyramid(code)
+    if not pyramid_data:
+        print(f"  Skipping {code}: Insufficient population data")
         return None
 
     # Get demographic indicators
-    indicators = get_demographic_indicators(location_id, iso_code)
+    print(f"  Fetching demographic indicators for {code}...")
+    tfr = fetch_indicator_data(code, 'SP.DYN.TFRT.IN')
+    life_exp = fetch_indicator_data(code, 'SP.DYN.LE00.IN')
+    cbr = fetch_indicator_data(code, 'SP.DYN.CBRT.IN')
 
-    # Get births peak year
-    year_births_peaked = get_births_data(location_id, iso_code)
+    # Calculate median age from pyramid
+    median_age = calculate_median_age(pyramid_data['pyramid'])
 
-    # Get crude birth rate
-    crude_birth_rate = get_crude_birth_rate(location_id, iso_code)
+    # Get year births peaked
+    year_births_peaked = get_year_births_peaked(code)
 
-    # Check if we have all required data
-    if not all([
-        indicators.get('totalFertilityRate'),
-        indicators.get('medianAge'),
-        indicators.get('lifeExpectancy'),
-        year_births_peaked,
-        crude_birth_rate
-    ]):
-        print(f"  Warning: {iso_code} missing some indicators, using defaults where needed")
+    # Use defaults if indicators missing
+    if tfr is None:
+        print(f"  Warning: {code} missing TFR, using default")
+        tfr = 2.1
+    if life_exp is None:
+        print(f"  Warning: {code} missing life expectancy, using default")
+        life_exp = 70.0
+    if cbr is None:
+        print(f"  Warning: {code} missing CBR, using default")
+        cbr = 20.0
 
     country_data = {
-        'code': iso_code,
+        'code': code,
         'name': name,
-        'population': pop_data['population'],
-        'totalFertilityRate': indicators.get('totalFertilityRate', 2.1),
-        'medianAge': indicators.get('medianAge', 30.0),
-        'yearBirthsPeaked': year_births_peaked or 2000,
-        'lifeExpectancy': indicators.get('lifeExpectancy', 70.0),
-        'crudeBirthRate': crude_birth_rate or 20.0,
-        'pyramid': pop_data['pyramid']
+        'population': pyramid_data['population'],
+        'totalFertilityRate': round(tfr, 2),
+        'medianAge': round(median_age, 1),
+        'yearBirthsPeaked': year_births_peaked,
+        'lifeExpectancy': round(life_exp, 1),
+        'crudeBirthRate': round(cbr, 1),
+        'pyramid': pyramid_data['pyramid']
     }
 
     return country_data
@@ -289,7 +290,7 @@ def create_country_data(location: Dict) -> Optional[Dict]:
 def main():
     """Main function to download all country data."""
     print("=" * 60)
-    print("Pyramidle Data Downloader")
+    print("Pyramidle Data Downloader (World Bank API)")
     print("=" * 60)
 
     # Create output directories
@@ -297,7 +298,7 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Get list of countries
-    countries = get_un_locations()
+    countries = get_wb_countries()
 
     # Country list for countries.json
     country_list = []
@@ -306,34 +307,34 @@ def main():
     successful = 0
     failed = 0
 
-    for location in countries:
+    for country in countries:
         try:
-            country_data = create_country_data(location)
+            country_data = create_country_data(country)
 
             if country_data:
                 # Save individual country file
-                iso_code = country_data['code']
-                output_file = output_dir / f"{iso_code}.json"
+                code = country_data['code']
+                output_file = output_dir / f"{code}.json"
 
                 with open(output_file, 'w', encoding='utf-8') as f:
                     json.dump(country_data, f, indent=2, ensure_ascii=False)
 
                 # Add to country list
                 country_list.append({
-                    'code': iso_code,
+                    'code': code,
                     'name': country_data['name']
                 })
 
                 successful += 1
-                print(f"  ✓ Saved {iso_code}.json")
+                print(f"  ✓ Saved {code}.json")
             else:
                 failed += 1
 
             # Rate limiting - be nice to the API
-            time.sleep(0.5)
+            time.sleep(0.3)
 
         except Exception as e:
-            print(f"  ✗ Error processing {location.get('iso3')}: {e}")
+            print(f"  ✗ Error processing {country.get('code')}: {e}")
             failed += 1
 
     # Sort country list by code
