@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CountryData } from './types';
+import type { CountryData } from './types';
 import { PopulationPyramid } from './components/PopulationPyramid';
 import { CountryInput } from './components/CountryInput';
 import { HintDisplay } from './components/HintDisplay';
@@ -47,7 +47,6 @@ function App() {
     guesses,
     hintsRevealed,
     gameStatus,
-    currentGuess,
     makeGuess,
     resetGame,
     nextCountry,

@@ -1,4 +1,4 @@
-import { CountryData, Hint } from '../types';
+import type { CountryData, Hint } from '../types';
 
 // Format TFR hint
 const formatTFR = (tfr: number): string => {

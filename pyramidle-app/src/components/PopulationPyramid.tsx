@@ -9,7 +9,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { PyramidData, AgeGroup } from '../types';
+import type { PyramidData, AgeGroup } from '../types';
 
 ChartJS.register(
   CategoryScale,

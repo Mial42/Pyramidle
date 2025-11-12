@@ -1,5 +1,5 @@
 import React from 'react';
-import { Hint } from '../types';
+import type { Hint } from '../types';
 
 interface HintDisplayProps {
   hints: Hint[];

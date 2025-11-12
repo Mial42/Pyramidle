@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GameState, CountryData, Hint } from '../types';
+import type { GameState, CountryData, Hint } from '../types';
 import { generateHint } from '../utils/hintGenerator';
 
 interface UseGameStateReturn extends GameState {
@@ -74,7 +74,7 @@ export const useGameState = (
     guesses,
     hintsRevealed,
     gameStatus,
-    currentGuess,
+    currentGuess: currentGuess,
     makeGuess,
     resetGame,
     nextCountry,
