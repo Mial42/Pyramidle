@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import type { CountryData } from './types';
 import { PopulationPyramid } from './components/PopulationPyramid';
 import { CountryInput } from './components/CountryInput';
-import { HintDisplay } from './components/HintDisplay';
-import { GuessHistory } from './components/GuessHistory';
+import { GuessGrid } from './components/GuessGrid';
 import { TestModeControls } from './components/TestModeControls';
 import { useGameState } from './hooks/useGameState';
 import './App.css';
@@ -90,7 +89,7 @@ function App() {
           Guess the country from its population pyramid!
         </p>
         <p style={{ fontSize: '14px', color: '#999' }}>
-          You have 5 guesses. Each wrong guess reveals a hint.
+          You have 6 guesses. Each wrong guess reveals a hint.
         </p>
       </header>
 
@@ -133,9 +132,6 @@ function App() {
         totalPopulation={targetCountry.population}
       />
 
-      {/* Hints Display */}
-      <HintDisplay hints={hintsRevealed} />
-
       {/* Country Input */}
       <CountryInput
         countries={countryList}
@@ -143,12 +139,13 @@ function App() {
         disabled={gameStatus !== 'playing'}
       />
 
-      {/* Guess History */}
-      <GuessHistory
+      {/* Guess Grid with Hints */}
+      <GuessGrid
         guesses={guesses}
+        hints={hintsRevealed}
         countryNames={countryNames}
         targetCountry={targetCountry.code}
-        gameStatus={gameStatus}
+        maxGuesses={6}
       />
 
       {/* Test Mode Controls */}

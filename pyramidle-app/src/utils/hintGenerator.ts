@@ -1,42 +1,28 @@
 import type { CountryData, Hint } from '../types';
 
-// Format TFR hint
+// Format TFR hint - show exact value
 const formatTFR = (tfr: number): string => {
-  if (tfr < 1.5) return '< 1.5';
-  if (tfr < 2.0) return '1.5-2.0';
-  if (tfr < 2.5) return '2.0-2.5';
-  if (tfr < 3.0) return '2.5-3.0';
-  if (tfr < 4.0) return '3.0-4.0';
-  if (tfr < 5.0) return '4.0-5.0';
-  return '> 5.0';
+  return tfr.toFixed(2);
 };
 
-// Format median age hint
+// Format median age hint - show exact value
 const formatMedianAge = (age: number): string => {
-  const lower = Math.floor(age / 5) * 5;
-  const upper = lower + 5;
-  return `${lower}-${upper} years`;
+  return `${age.toFixed(1)} years`;
 };
 
-// Format births peak year hint
+// Format births peak year hint - show exact value
 const formatBirthsPeak = (year: number): string => {
-  const lower = Math.floor(year / 5) * 5;
-  const upper = lower + 5;
-  return `${lower}-${upper}`;
+  return year.toString();
 };
 
-// Format life expectancy hint
+// Format life expectancy hint - show exact value
 const formatLifeExpectancy = (le: number): string => {
-  const lower = Math.floor(le / 5) * 5;
-  const upper = lower + 5;
-  return `${lower}-${upper} years`;
+  return `${le.toFixed(1)} years`;
 };
 
-// Format crude birth rate hint
+// Format crude birth rate hint - show exact value
 const formatCBR = (cbr: number): string => {
-  const lower = Math.floor(cbr / 5) * 5;
-  const upper = lower + 5;
-  return `${lower}-${upper} per 1,000`;
+  return `${cbr.toFixed(1)} per 1,000`;
 };
 
 // Generate hints in order based on incorrect guess count

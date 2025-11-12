@@ -29,7 +29,7 @@ export const useGameState = (
   }, [currentCountryIndex, availableCountries]);
 
   const makeGuess = (countryCode: string) => {
-    if (gameStatus !== 'playing' || currentGuess >= 5) {
+    if (gameStatus !== 'playing' || currentGuess >= 6) {
       return;
     }
 
@@ -44,7 +44,7 @@ export const useGameState = (
     }
 
     // Check if out of guesses
-    if (newGuesses.length >= 5) {
+    if (newGuesses.length >= 6) {
       setGameStatus('lost');
       return;
     }
