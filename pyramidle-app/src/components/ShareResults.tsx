@@ -77,7 +77,7 @@ export const ShareResults = ({ date, guessCount, squares }: ShareResultsProps) =
       </button>
 
       <div style={{ marginTop: '12px', fontSize: '12px', color: '#6c757d' }}>
-        🟩 Very close · 🟨 Medium · ⬜ Far
+        🟩 ≤10 ranks · 🟨 ≤30 ranks · ⬜ ≤60 ranks · 🟥 &gt;60 ranks
       </div>
       <div style={{ marginTop: '4px', fontSize: '11px', color: '#6c757d' }}>
         Population · TFR · Median Age · Birth Peak · Life Exp · CBR

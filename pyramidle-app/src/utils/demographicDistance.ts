@@ -13,90 +13,115 @@ const getYearsBeforePeak = (country: CountryData): number => {
 };
 
 /**
- * Calculate min/max for each demographic dimension across all countries
+ * Country with its value for a specific metric
  */
-export const calculateDemographicRanges = (countries: CountryData[]) => {
+interface RankedCountry {
+  code: string;
+  value: number;
+}
+
+/**
+ * Rankings for all demographic metrics
+ */
+export interface DemographicRankings {
+  population: RankedCountry[];
+  tfr: RankedCountry[];
+  medianAge: RankedCountry[];
+  yearsBeforePeak: RankedCountry[];
+  lifeExpectancy: RankedCountry[];
+  cbr: RankedCountry[];
+}
+
+/**
+ * Calculate rankings for each demographic dimension
+ * Countries are sorted by each metric value
+ */
+export const calculateDemographicRankings = (countries: CountryData[]): DemographicRankings => {
   if (countries.length === 0) {
     return {
-      population: { min: 0, max: 1 },
-      tfr: { min: 0, max: 1 },
-      medianAge: { min: 0, max: 1 },
-      yearsBeforePeak: { min: 0, max: 1 },
-      lifeExpectancy: { min: 0, max: 1 },
-      cbr: { min: 0, max: 1 },
+      population: [],
+      tfr: [],
+      medianAge: [],
+      yearsBeforePeak: [],
+      lifeExpectancy: [],
+      cbr: [],
     };
   }
 
-  const populations = countries.map(c => c.population);
-  const tfrs = countries.map(c => c.totalFertilityRate);
-  const medianAges = countries.map(c => c.medianAge);
-  const yearsBeforePeaks = countries.map(c => getYearsBeforePeak(c));
-  const lifeExpectancies = countries.map(c => c.lifeExpectancy);
-  const cbrs = countries.map(c => c.crudeBirthRate);
+  // Create ranked lists for each metric
+  const population = countries
+    .map(c => ({ code: c.code, value: c.population }))
+    .sort((a, b) => a.value - b.value);
+
+  const tfr = countries
+    .map(c => ({ code: c.code, value: c.totalFertilityRate }))
+    .sort((a, b) => a.value - b.value);
+
+  const medianAge = countries
+    .map(c => ({ code: c.code, value: c.medianAge }))
+    .sort((a, b) => a.value - b.value);
+
+  const yearsBeforePeak = countries
+    .map(c => ({ code: c.code, value: getYearsBeforePeak(c) }))
+    .sort((a, b) => a.value - b.value);
+
+  const lifeExpectancy = countries
+    .map(c => ({ code: c.code, value: c.lifeExpectancy }))
+    .sort((a, b) => a.value - b.value);
+
+  const cbr = countries
+    .map(c => ({ code: c.code, value: c.crudeBirthRate }))
+    .sort((a, b) => a.value - b.value);
 
   return {
-    population: {
-      min: Math.min(...populations),
-      max: Math.max(...populations),
-    },
-    tfr: {
-      min: Math.min(...tfrs),
-      max: Math.max(...tfrs),
-    },
-    medianAge: {
-      min: Math.min(...medianAges),
-      max: Math.max(...medianAges),
-    },
-    yearsBeforePeak: {
-      min: Math.min(...yearsBeforePeaks),
-      max: Math.max(...yearsBeforePeaks),
-    },
-    lifeExpectancy: {
-      min: Math.min(...lifeExpectancies),
-      max: Math.max(...lifeExpectancies),
-    },
-    cbr: {
-      min: Math.min(...cbrs),
-      max: Math.max(...cbrs),
-    },
+    population,
+    tfr,
+    medianAge,
+    yearsBeforePeak,
+    lifeExpectancy,
+    cbr,
   };
 };
 
-type DemographicRanges = ReturnType<typeof calculateDemographicRanges>;
-
 /**
- * Normalize a value to 0-1 range based on min/max
+ * Find the rank (position) of a country in a ranked list
+ * Returns -1 if not found
  */
-const normalize = (value: number, min: number, max: number): number => {
-  if (max === min) return 0;
-  return (value - min) / (max - min);
+const findRank = (rankedList: RankedCountry[], countryCode: string): number => {
+  return rankedList.findIndex(item => item.code === countryCode);
 };
 
 /**
- * Calculate normalized distance between two countries on a single dimension
- * Returns a value between 0 (identical) and 1 (maximally different)
+ * Calculate rank distance between two countries on a single dimension
+ * Returns the absolute difference in their positions in the ranking
  */
-const calculateDimensionDistance = (
-  value1: number,
-  value2: number,
-  min: number,
-  max: number
+const calculateRankDistance = (
+  rankedList: RankedCountry[],
+  guessCode: string,
+  targetCode: string
 ): number => {
-  const normalized1 = normalize(value1, min, max);
-  const normalized2 = normalize(value2, min, max);
-  return Math.abs(normalized1 - normalized2);
+  const guessRank = findRank(rankedList, guessCode);
+  const targetRank = findRank(rankedList, targetCode);
+
+  if (guessRank === -1 || targetRank === -1) {
+    return 999; // Large number if country not found
+  }
+
+  return Math.abs(guessRank - targetRank);
 };
 
 /**
- * Get color for a distance value
- * Green (🟩) = within 10% of range
- * Yellow (🟨) = 10-30% of range
- * White (⬜) = >30% of range
+ * Get color for a rank distance
+ * Green (🟩) = within 10 countries
+ * Yellow (🟨) = within 30 countries
+ * White (⬜) = within 60 countries
+ * Red (🟥) = beyond 60 countries
  */
-const getColorForDistance = (distance: number): string => {
-  if (distance <= 0.1) return '🟩';
-  if (distance <= 0.3) return '🟨';
-  return '⬜';
+const getColorForRankDistance = (rankDistance: number): string => {
+  if (rankDistance <= 10) return '🟩';
+  if (rankDistance <= 30) return '🟨';
+  if (rankDistance <= 60) return '⬜';
+  return '🟥';
 };
 
 /**
@@ -106,54 +131,24 @@ const getColorForDistance = (distance: number): string => {
 export const calculateGuessSquares = (
   guess: CountryData,
   target: CountryData,
-  ranges: DemographicRanges
+  rankings: DemographicRankings
 ): string => {
-  const distances = [
+  const rankDistances = [
     // Population
-    calculateDimensionDistance(
-      guess.population,
-      target.population,
-      ranges.population.min,
-      ranges.population.max
-    ),
+    calculateRankDistance(rankings.population, guess.code, target.code),
     // TFR
-    calculateDimensionDistance(
-      guess.totalFertilityRate,
-      target.totalFertilityRate,
-      ranges.tfr.min,
-      ranges.tfr.max
-    ),
+    calculateRankDistance(rankings.tfr, guess.code, target.code),
     // Median age
-    calculateDimensionDistance(
-      guess.medianAge,
-      target.medianAge,
-      ranges.medianAge.min,
-      ranges.medianAge.max
-    ),
+    calculateRankDistance(rankings.medianAge, guess.code, target.code),
     // Years before peak
-    calculateDimensionDistance(
-      getYearsBeforePeak(guess),
-      getYearsBeforePeak(target),
-      ranges.yearsBeforePeak.min,
-      ranges.yearsBeforePeak.max
-    ),
+    calculateRankDistance(rankings.yearsBeforePeak, guess.code, target.code),
     // Life expectancy
-    calculateDimensionDistance(
-      guess.lifeExpectancy,
-      target.lifeExpectancy,
-      ranges.lifeExpectancy.min,
-      ranges.lifeExpectancy.max
-    ),
+    calculateRankDistance(rankings.lifeExpectancy, guess.code, target.code),
     // CBR
-    calculateDimensionDistance(
-      guess.crudeBirthRate,
-      target.crudeBirthRate,
-      ranges.cbr.min,
-      ranges.cbr.max
-    ),
+    calculateRankDistance(rankings.cbr, guess.code, target.code),
   ];
 
-  return distances.map(getColorForDistance).join('');
+  return rankDistances.map(getColorForRankDistance).join('');
 };
 
 /**

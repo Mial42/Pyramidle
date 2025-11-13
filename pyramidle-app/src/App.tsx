@@ -7,7 +7,7 @@ import { TestModeControls } from './components/TestModeControls';
 import { ShareResults } from './components/ShareResults';
 import { useGameState } from './hooks/useGameState';
 import { selectDailyCountry } from './utils/dailyCountry';
-import { calculateDemographicRanges, calculateGuessSquares } from './utils/demographicDistance';
+import { calculateDemographicRankings, calculateGuessSquares } from './utils/demographicDistance';
 import './App.css';
 
 const isTestMode = import.meta.env.VITE_TEST_MODE === 'true';
@@ -66,9 +66,9 @@ function App() {
     return selectDailyCountry(countries);
   }, [countries]);
 
-  // Calculate demographic ranges for distance calculation
-  const demographicRanges = useMemo(() => {
-    return calculateDemographicRanges(countries);
+  // Calculate demographic rankings for distance calculation
+  const demographicRankings = useMemo(() => {
+    return calculateDemographicRankings(countries);
   }, [countries]);
 
   const {
@@ -87,12 +87,12 @@ function App() {
 
     const squares = guesses.map(guessCode => {
       const guessCountry = countries.find(c => c.code === guessCode);
-      if (!guessCountry) return '⬜⬜⬜⬜⬜⬜';
-      return calculateGuessSquares(guessCountry, targetCountry, demographicRanges);
+      if (!guessCountry) return '🟥🟥🟥🟥🟥🟥';
+      return calculateGuessSquares(guessCountry, targetCountry, demographicRankings);
     });
 
     setGuessSquares(squares);
-  }, [guesses, targetCountry, countries, demographicRanges]);
+  }, [guesses, targetCountry, countries, demographicRankings]);
 
   // Reset squares when game resets
   useEffect(() => {
