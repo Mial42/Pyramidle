@@ -1,8 +1,9 @@
 {
   "code": "SSD",
   "name": "South Sudan",
+  "dataYear": 2023,
   "population": 11943404,
-  "totalFertilityRate": 2.1,
+  "totalFertilityRate": 3.86,
   "medianAge": 23.8,
   "yearBirthsPeaked": 2014,
   "lifeExpectancy": 57.6,

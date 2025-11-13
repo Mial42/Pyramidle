@@ -1,6 +1,7 @@
 {
   "code": "CHI",
   "name": "Channel Islands",
+  "dataYear": 2023,
   "population": 168125,
   "totalFertilityRate": 1.37,
   "medianAge": 43.2,

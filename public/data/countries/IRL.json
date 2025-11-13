@@ -1,6 +1,7 @@
 {
   "code": "IRL",
   "name": "Ireland",
+  "dataYear": 2023,
   "population": 5380255,
   "totalFertilityRate": 1.5,
   "medianAge": 39.0,

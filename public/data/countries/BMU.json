@@ -1,6 +1,7 @@
 {
   "code": "BMU",
   "name": "Bermuda",
+  "dataYear": 2023,
   "population": 64632,
   "totalFertilityRate": 1.4,
   "medianAge": 44.2,

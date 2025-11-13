@@ -1,6 +1,7 @@
 {
   "code": "MDV",
   "name": "Maldives",
+  "dataYear": 2023,
   "population": 527797,
   "totalFertilityRate": 1.57,
   "medianAge": 32.3,

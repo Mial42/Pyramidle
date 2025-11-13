@@ -1,6 +1,7 @@
 {
   "code": "SYC",
   "name": "Seychelles",
+  "dataYear": 2023,
   "population": 121357,
   "totalFertilityRate": 2.02,
   "medianAge": 34.9,

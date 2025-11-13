@@ -1,6 +1,7 @@
 {
   "code": "PHL",
   "name": "Philippines",
+  "dataYear": 2023,
   "population": 115843672,
   "totalFertilityRate": 1.92,
   "medianAge": 29.2,

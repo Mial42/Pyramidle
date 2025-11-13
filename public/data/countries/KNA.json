@@ -1,6 +1,7 @@
 {
   "code": "KNA",
   "name": "St. Kitts and Nevis",
+  "dataYear": 2023,
   "population": 46845,
   "totalFertilityRate": 1.5,
   "medianAge": 36.8,

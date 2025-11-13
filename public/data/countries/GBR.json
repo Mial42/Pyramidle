@@ -1,6 +1,7 @@
 {
   "code": "GBR",
   "name": "United Kingdom",
+  "dataYear": 2023,
   "population": 69225999,
   "totalFertilityRate": 1.56,
   "medianAge": 41.1,

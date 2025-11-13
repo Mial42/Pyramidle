@@ -1,6 +1,7 @@
 {
   "code": "DEU",
   "name": "Germany",
+  "dataYear": 2023,
   "population": 83510951,
   "totalFertilityRate": 1.39,
   "medianAge": 44.7,

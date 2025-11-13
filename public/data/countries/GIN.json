@@ -1,10 +1,11 @@
 {
   "code": "GIN",
   "name": "Guinea",
+  "dataYear": 2023,
   "population": 14754782,
   "totalFertilityRate": 4.22,
   "medianAge": 22.9,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 60.7,
   "crudeBirthRate": 33.8,
   "pyramid": {

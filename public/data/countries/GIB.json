@@ -1,6 +1,7 @@
 {
   "code": "GIB",
   "name": "Gibraltar",
+  "dataYear": 2023,
   "population": 39333,
   "totalFertilityRate": 1.89,
   "medianAge": 39.9,

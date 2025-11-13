@@ -1,6 +1,7 @@
 {
   "code": "CUW",
   "name": "Curacao",
+  "dataYear": 2023,
   "population": 155902,
   "totalFertilityRate": 1.2,
   "medianAge": 40.4,

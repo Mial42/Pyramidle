@@ -1,6 +1,7 @@
 {
   "code": "AND",
   "name": "Andorra",
+  "dataYear": 2023,
   "population": 81943,
   "totalFertilityRate": 1.08,
   "medianAge": 42.7,

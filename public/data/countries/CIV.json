@@ -1,11 +1,12 @@
 {
   "code": "CIV",
   "name": "Cote d'Ivoire",
+  "dataYear": 2023,
   "population": 31934230,
   "totalFertilityRate": 4.28,
   "medianAge": 23.1,
-  "yearBirthsPeaked": 2023,
-  "lifeExpectancy": 70.0,
+  "yearBirthsPeaked": "Has not peaked yet",
+  "lifeExpectancy": 61.9,
   "crudeBirthRate": 32.0,
   "pyramid": {
     "male": {

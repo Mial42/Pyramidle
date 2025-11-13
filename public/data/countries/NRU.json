@@ -1,6 +1,7 @@
 {
   "code": "NRU",
   "name": "Nauru",
+  "dataYear": 2023,
   "population": 11951,
   "totalFertilityRate": 3.33,
   "medianAge": 24.8,

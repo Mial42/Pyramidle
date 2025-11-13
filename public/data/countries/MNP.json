@@ -1,6 +1,7 @@
 {
   "code": "MNP",
   "name": "Northern Mariana Islands",
+  "dataYear": 2023,
   "population": 44280,
   "totalFertilityRate": 2.35,
   "medianAge": 36.3,

@@ -1,10 +1,11 @@
 {
   "code": "MRT",
   "name": "Mauritania",
+  "dataYear": 2023,
   "population": 5169392,
   "totalFertilityRate": 4.7,
   "medianAge": 22.6,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 68.5,
   "crudeBirthRate": 34.4,
   "pyramid": {

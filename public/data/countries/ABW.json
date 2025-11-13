@@ -1,6 +1,7 @@
 {
   "code": "ABW",
   "name": "Aruba",
+  "dataYear": 2023,
   "population": 107624,
   "totalFertilityRate": 1.6,
   "medianAge": 40.6,

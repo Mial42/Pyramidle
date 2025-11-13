@@ -1,6 +1,7 @@
 {
   "code": "BDI",
   "name": "Burundi",
+  "dataYear": 2023,
   "population": 14047783,
   "totalFertilityRate": 4.88,
   "medianAge": 21.5,

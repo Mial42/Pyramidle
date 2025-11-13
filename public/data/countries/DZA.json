@@ -1,6 +1,7 @@
 {
   "code": "DZA",
   "name": "Algeria",
+  "dataYear": 2023,
   "population": 46814312,
   "totalFertilityRate": 2.77,
   "medianAge": 30.3,

@@ -1,6 +1,7 @@
 {
   "code": "NCL",
   "name": "New Caledonia",
+  "dataYear": 2023,
   "population": 292635,
   "totalFertilityRate": 1.98,
   "medianAge": 35.8,

@@ -1,6 +1,7 @@
 {
   "code": "CPV",
   "name": "Cabo Verde",
+  "dataYear": 2023,
   "population": 524877,
   "totalFertilityRate": 1.52,
   "medianAge": 30.9,

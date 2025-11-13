@@ -1,6 +1,7 @@
 {
   "code": "ZAF",
   "name": "South Africa",
+  "dataYear": 2023,
   "population": 64007187,
   "totalFertilityRate": 2.22,
   "medianAge": 30.7,

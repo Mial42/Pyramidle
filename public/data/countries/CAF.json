@@ -1,10 +1,11 @@
 {
   "code": "CAF",
   "name": "Central African Republic",
+  "dataYear": 2023,
   "population": 5330696,
   "totalFertilityRate": 6.01,
   "medianAge": 19.3,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 57.4,
   "crudeBirthRate": 46.4,
   "pyramid": {

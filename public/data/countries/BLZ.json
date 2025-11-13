@@ -1,6 +1,7 @@
 {
   "code": "BLZ",
   "name": "Belize",
+  "dataYear": 2023,
   "population": 417075,
   "totalFertilityRate": 2.01,
   "medianAge": 29.2,

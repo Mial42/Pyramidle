@@ -1,6 +1,7 @@
 {
   "code": "KHM",
   "name": "Cambodia",
+  "dataYear": 2023,
   "population": 17638806,
   "totalFertilityRate": 2.58,
   "medianAge": 29.2,

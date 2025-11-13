@@ -1,6 +1,7 @@
 {
   "code": "BTN",
   "name": "Bhutan",
+  "dataYear": 2023,
   "population": 791521,
   "totalFertilityRate": 1.46,
   "medianAge": 31.9,

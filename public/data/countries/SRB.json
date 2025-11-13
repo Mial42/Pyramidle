@@ -1,6 +1,7 @@
 {
   "code": "SRB",
   "name": "Serbia",
+  "dataYear": 2023,
   "population": 6587201,
   "totalFertilityRate": 1.61,
   "medianAge": 43.6,

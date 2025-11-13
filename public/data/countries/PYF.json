@@ -1,6 +1,7 @@
 {
   "code": "PYF",
   "name": "French Polynesia",
+  "dataYear": 2023,
   "population": 281809,
   "totalFertilityRate": 1.5,
   "medianAge": 36.6,

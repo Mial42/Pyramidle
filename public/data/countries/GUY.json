@@ -1,6 +1,7 @@
 {
   "code": "GUY",
   "name": "Guyana",
+  "dataYear": 2023,
   "population": 831092,
   "totalFertilityRate": 2.41,
   "medianAge": 29.7,

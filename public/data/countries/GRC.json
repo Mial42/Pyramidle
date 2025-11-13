@@ -1,6 +1,7 @@
 {
   "code": "GRC",
   "name": "Greece",
+  "dataYear": 2023,
   "population": 10388804,
   "totalFertilityRate": 1.32,
   "medianAge": 45.3,

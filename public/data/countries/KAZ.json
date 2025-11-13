@@ -1,6 +1,7 @@
 {
   "code": "KAZ",
   "name": "Kazakhstan",
+  "dataYear": 2023,
   "population": 20592570,
   "totalFertilityRate": 3.01,
   "medianAge": 31.6,

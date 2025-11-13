@@ -1,11 +1,12 @@
 {
   "code": "LBN",
   "name": "Lebanon",
+  "dataYear": 2023,
   "population": 5805966,
   "totalFertilityRate": 2.24,
   "medianAge": 32.8,
   "yearBirthsPeaked": 2015,
-  "lifeExpectancy": 70.0,
+  "lifeExpectancy": 77.8,
   "crudeBirthRate": 16.1,
   "pyramid": {
     "male": {

@@ -1,6 +1,7 @@
 {
   "code": "PAN",
   "name": "Panama",
+  "dataYear": 2023,
   "population": 4515576,
   "totalFertilityRate": 2.12,
   "medianAge": 32.9,

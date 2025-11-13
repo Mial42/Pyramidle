@@ -1,6 +1,7 @@
 {
   "code": "MNG",
   "name": "Mongolia",
+  "dataYear": 2023,
   "population": 3524787,
   "totalFertilityRate": 2.7,
   "medianAge": 29.2,

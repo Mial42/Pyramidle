@@ -1,10 +1,11 @@
 {
   "code": "VUT",
   "name": "Vanuatu",
+  "dataYear": 2023,
   "population": 327776,
   "totalFertilityRate": 3.6,
   "medianAge": 25.1,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 71.5,
   "crudeBirthRate": 28.1,
   "pyramid": {

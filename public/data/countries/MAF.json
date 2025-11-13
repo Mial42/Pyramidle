@@ -1,6 +1,7 @@
 {
   "code": "MAF",
   "name": "St. Martin (French part)",
+  "dataYear": 2023,
   "population": 26127,
   "totalFertilityRate": 2.72,
   "medianAge": 40.0,

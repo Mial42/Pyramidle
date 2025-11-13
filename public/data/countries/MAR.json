@@ -1,6 +1,7 @@
 {
   "code": "MAR",
   "name": "Morocco",
+  "dataYear": 2023,
   "population": 38081175,
   "totalFertilityRate": 2.23,
   "medianAge": 32.0,

@@ -1,6 +1,7 @@
 {
   "code": "BRA",
   "name": "Brazil",
+  "dataYear": 2023,
   "population": 211998567,
   "totalFertilityRate": 1.62,
   "medianAge": 35.9,

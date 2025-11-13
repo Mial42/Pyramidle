@@ -1,10 +1,11 @@
 {
   "code": "HND",
   "name": "Honduras",
+  "dataYear": 2023,
   "population": 10049813,
   "totalFertilityRate": 2.5,
   "medianAge": 26.5,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 72.9,
   "crudeBirthRate": 22.0,
   "pyramid": {
@@ -25,7 +26,7 @@
       "70-74": 64025,
       "75-79": 34441,
       "80+": 21516,
-      "35-39": 0
+      "35-39": 392097
     },
     "female": {
       "0-4": 558295,
@@ -44,7 +45,7 @@
       "70-74": 77925,
       "75-79": 44709,
       "80+": 35562,
-      "35-39": 0
+      "35-39": 383793
     }
   }
 }

@@ -1,6 +1,7 @@
 {
   "code": "BRB",
   "name": "Barbados",
+  "dataYear": 2023,
   "population": 282466,
   "totalFertilityRate": 1.71,
   "medianAge": 39.7,

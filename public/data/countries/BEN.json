@@ -1,10 +1,11 @@
 {
   "code": "BEN",
   "name": "Benin",
+  "dataYear": 2023,
   "population": 14462720,
   "totalFertilityRate": 4.56,
   "medianAge": 22.9,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 60.8,
   "crudeBirthRate": 33.9,
   "pyramid": {

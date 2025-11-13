@@ -1,10 +1,11 @@
 {
   "code": "COM",
   "name": "Comoros",
+  "dataYear": 2023,
   "population": 866624,
   "totalFertilityRate": 3.88,
   "medianAge": 25.3,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 66.8,
   "crudeBirthRate": 28.7,
   "pyramid": {

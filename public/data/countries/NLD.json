@@ -1,6 +1,7 @@
 {
   "code": "NLD",
   "name": "Netherlands",
+  "dataYear": 2023,
   "population": 17994236,
   "totalFertilityRate": 1.43,
   "medianAge": 42.2,

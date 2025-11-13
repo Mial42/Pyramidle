@@ -1,6 +1,7 @@
 {
   "code": "NOR",
   "name": "Norway",
+  "dataYear": 2023,
   "population": 5572269,
   "totalFertilityRate": 1.4,
   "medianAge": 40.9,

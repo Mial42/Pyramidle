@@ -1,6 +1,7 @@
 {
   "code": "DNK",
   "name": "Denmark",
+  "dataYear": 2023,
   "population": 5976990,
   "totalFertilityRate": 1.5,
   "medianAge": 42.0,

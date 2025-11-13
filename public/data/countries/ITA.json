@@ -1,6 +1,7 @@
 {
   "code": "ITA",
   "name": "Italy",
+  "dataYear": 2023,
   "population": 58986024,
   "totalFertilityRate": 1.2,
   "medianAge": 46.2,

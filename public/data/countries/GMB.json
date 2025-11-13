@@ -1,10 +1,11 @@
 {
   "code": "GMB",
   "name": "Gambia, The",
+  "dataYear": 2023,
   "population": 2502754,
   "totalFertilityRate": 4.01,
   "medianAge": 23.3,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 65.9,
   "crudeBirthRate": 30.4,
   "pyramid": {
@@ -25,7 +26,7 @@
       "70-74": 9933,
       "75-79": 6174,
       "80+": 4461,
-      "20-24": 0
+      "20-24": 129386
     },
     "female": {
       "0-4": 191823,
@@ -44,7 +45,7 @@
       "70-74": 12599,
       "75-79": 7489,
       "80+": 5561,
-      "20-24": 0
+      "20-24": 127853
     }
   }
 }

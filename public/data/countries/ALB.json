@@ -1,6 +1,7 @@
 {
   "code": "ALB",
   "name": "Albania",
+  "dataYear": 2023,
   "population": 2714619,
   "totalFertilityRate": 1.35,
   "medianAge": 39.5,

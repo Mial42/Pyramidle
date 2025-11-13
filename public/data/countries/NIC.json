@@ -1,6 +1,7 @@
 {
   "code": "NIC",
   "name": "Nicaragua",
+  "dataYear": 2023,
   "population": 6916141,
   "totalFertilityRate": 2.22,
   "medianAge": 28.8,

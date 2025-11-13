@@ -1,6 +1,7 @@
 {
   "code": "LTU",
   "name": "Lithuania",
+  "dataYear": 2023,
   "population": 2888054,
   "totalFertilityRate": 1.18,
   "medianAge": 42.7,

@@ -1,6 +1,7 @@
 {
   "code": "PRT",
   "name": "Portugal",
+  "dataYear": 2023,
   "population": 10701637,
   "totalFertilityRate": 1.44,
   "medianAge": 45.4,

@@ -1,6 +1,7 @@
 {
   "code": "GAB",
   "name": "Gabon",
+  "dataYear": 2023,
   "population": 2538956,
   "totalFertilityRate": 3.65,
   "medianAge": 25.7,

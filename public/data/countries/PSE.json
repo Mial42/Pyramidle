@@ -1,6 +1,7 @@
 {
   "code": "PSE",
   "name": "West Bank and Gaza",
+  "dataYear": 2023,
   "population": 5289149,
   "totalFertilityRate": 3.31,
   "medianAge": 24.5,

@@ -1,6 +1,7 @@
 {
   "code": "GUM",
   "name": "Guam",
+  "dataYear": 2023,
   "population": 167780,
   "totalFertilityRate": 2.78,
   "medianAge": 34.6,

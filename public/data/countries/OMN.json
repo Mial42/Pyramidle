@@ -1,6 +1,7 @@
 {
   "code": "OMN",
   "name": "Oman",
+  "dataYear": 2023,
   "population": 5281540,
   "totalFertilityRate": 2.52,
   "medianAge": 29.1,

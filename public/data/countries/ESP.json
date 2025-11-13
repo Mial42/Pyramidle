@@ -1,6 +1,7 @@
 {
   "code": "ESP",
   "name": "Spain",
+  "dataYear": 2023,
   "population": 48807138,
   "totalFertilityRate": 1.12,
   "medianAge": 44.4,

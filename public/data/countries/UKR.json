@@ -1,6 +1,7 @@
 {
   "code": "UKR",
   "name": "Ukraine",
+  "dataYear": 2023,
   "population": 37860223,
   "totalFertilityRate": 0.98,
   "medianAge": 42.7,

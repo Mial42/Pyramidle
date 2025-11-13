@@ -1,12 +1,13 @@
 {
   "code": "LBY",
   "name": "Libya",
+  "dataYear": 2023,
   "population": 7149112,
-  "totalFertilityRate": 2.1,
+  "totalFertilityRate": 2.35,
   "medianAge": 29.1,
   "yearBirthsPeaked": 2011,
   "lifeExpectancy": 69.3,
-  "crudeBirthRate": 20.0,
+  "crudeBirthRate": 17.0,
   "pyramid": {
     "male": {
       "0-4": 324311,
@@ -25,7 +26,7 @@
       "70-74": 44963,
       "75-79": 28826,
       "80+": 27953,
-      "60-64": 0
+      "60-64": 114004
     },
     "female": {
       "0-4": 307228,
@@ -44,7 +45,7 @@
       "70-74": 54237,
       "75-79": 37430,
       "80+": 35057,
-      "60-64": 0
+      "60-64": 117906
     }
   }
 }

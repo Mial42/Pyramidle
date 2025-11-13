@@ -1,10 +1,11 @@
 {
   "code": "LKA",
   "name": "Sri Lanka",
+  "dataYear": 2023,
   "population": 21916001,
   "totalFertilityRate": 1.97,
   "medianAge": 35.3,
-  "yearBirthsPeaked": 2000,
+  "yearBirthsPeaked": 1979,
   "lifeExpectancy": 77.5,
   "crudeBirthRate": 11.2,
   "pyramid": {

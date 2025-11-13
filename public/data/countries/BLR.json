@@ -1,6 +1,7 @@
 {
   "code": "BLR",
   "name": "Belarus",
+  "dataYear": 2023,
   "population": 9133710,
   "totalFertilityRate": 1.21,
   "medianAge": 41.3,

@@ -1,6 +1,7 @@
 {
   "code": "HRV",
   "name": "Croatia",
+  "dataYear": 2023,
   "population": 3866302,
   "totalFertilityRate": 1.46,
   "medianAge": 44.2,

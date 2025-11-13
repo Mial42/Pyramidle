@@ -1,6 +1,7 @@
 {
   "code": "FRO",
   "name": "Faroe Islands",
+  "dataYear": 2023,
   "population": 54716,
   "totalFertilityRate": 1.86,
   "medianAge": 38.9,

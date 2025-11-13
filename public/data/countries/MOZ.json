@@ -1,10 +1,11 @@
 {
   "code": "MOZ",
   "name": "Mozambique",
+  "dataYear": 2023,
   "population": 34631766,
   "totalFertilityRate": 4.76,
   "medianAge": 21.4,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 63.6,
   "crudeBirthRate": 37.5,
   "pyramid": {

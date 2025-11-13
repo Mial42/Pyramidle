@@ -1,6 +1,7 @@
 {
   "code": "FIN",
   "name": "Finland",
+  "dataYear": 2023,
   "population": 5637214,
   "totalFertilityRate": 1.26,
   "medianAge": 43.6,

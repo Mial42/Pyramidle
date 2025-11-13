@@ -1,10 +1,11 @@
 {
   "code": "RWA",
   "name": "Rwanda",
+  "dataYear": 2023,
   "population": 13949712,
   "totalFertilityRate": 3.7,
   "medianAge": 23.6,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 67.8,
   "crudeBirthRate": 28.3,
   "pyramid": {
@@ -25,7 +26,7 @@
       "70-74": 65919,
       "75-79": 33697,
       "80+": 22167,
-      "60-64": 0
+      "60-64": 134368
     },
     "female": {
       "0-4": 937692,
@@ -44,7 +45,7 @@
       "70-74": 94278,
       "75-79": 55339,
       "80+": 42905,
-      "60-64": 0
+      "60-64": 172495
     }
   }
 }

@@ -1,6 +1,7 @@
 {
   "code": "TUR",
   "name": "Turkiye",
+  "dataYear": 2023,
   "population": 85518658,
   "totalFertilityRate": 1.51,
   "medianAge": 34.9,

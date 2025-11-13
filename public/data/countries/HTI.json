@@ -1,6 +1,7 @@
 {
   "code": "HTI",
   "name": "Haiti",
+  "dataYear": 2023,
   "population": 11772561,
   "totalFertilityRate": 2.66,
   "medianAge": 27.4,

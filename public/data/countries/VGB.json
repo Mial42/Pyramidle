@@ -1,6 +1,7 @@
 {
   "code": "VGB",
   "name": "British Virgin Islands",
+  "dataYear": 2023,
   "population": 39471,
   "totalFertilityRate": 1.04,
   "medianAge": 37.9,

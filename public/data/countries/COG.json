@@ -1,10 +1,11 @@
 {
   "code": "COG",
   "name": "Congo, Rep.",
+  "dataYear": 2023,
   "population": 6332959,
   "totalFertilityRate": 4.16,
   "medianAge": 23.7,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 65.8,
   "crudeBirthRate": 30.6,
   "pyramid": {

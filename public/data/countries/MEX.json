@@ -1,6 +1,7 @@
 {
   "code": "MEX",
   "name": "Mexico",
+  "dataYear": 2023,
   "population": 130861006,
   "totalFertilityRate": 1.91,
   "medianAge": 32.2,

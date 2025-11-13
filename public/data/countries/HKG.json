@@ -1,6 +1,7 @@
 {
   "code": "HKG",
   "name": "Hong Kong SAR, China",
+  "dataYear": 2023,
   "population": 7524100,
   "totalFertilityRate": 0.75,
   "medianAge": 46.2,

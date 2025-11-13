@@ -1,6 +1,7 @@
 {
   "code": "BFA",
   "name": "Burkina Faso",
+  "dataYear": 2023,
   "population": 23548781,
   "totalFertilityRate": 4.19,
   "medianAge": 22.4,

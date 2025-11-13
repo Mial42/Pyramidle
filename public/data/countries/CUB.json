@@ -1,6 +1,7 @@
 {
   "code": "CUB",
   "name": "Cuba",
+  "dataYear": 2023,
   "population": 10979781,
   "totalFertilityRate": 1.44,
   "medianAge": 41.7,

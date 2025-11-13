@@ -1,6 +1,7 @@
 {
   "code": "TUV",
   "name": "Tuvalu",
+  "dataYear": 2023,
   "population": 9646,
   "totalFertilityRate": 3.21,
   "medianAge": 29.0,

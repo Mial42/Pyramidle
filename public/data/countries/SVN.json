@@ -1,6 +1,7 @@
 {
   "code": "SVN",
   "name": "Slovenia",
+  "dataYear": 2023,
   "population": 2126323,
   "totalFertilityRate": 1.51,
   "medianAge": 43.7,

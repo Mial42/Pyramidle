@@ -1,6 +1,7 @@
 {
   "code": "BGR",
   "name": "Bulgaria",
+  "dataYear": 2023,
   "population": 6444366,
   "totalFertilityRate": 1.81,
   "medianAge": 43.8,

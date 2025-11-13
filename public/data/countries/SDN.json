@@ -1,10 +1,11 @@
 {
   "code": "SDN",
   "name": "Sudan",
+  "dataYear": 2023,
   "population": 50448964,
   "totalFertilityRate": 4.32,
   "medianAge": 23.1,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 66.3,
   "crudeBirthRate": 33.6,
   "pyramid": {

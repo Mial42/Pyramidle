@@ -1,6 +1,7 @@
 {
   "code": "BGD",
   "name": "Bangladesh",
+  "dataYear": 2023,
   "population": 173562365,
   "totalFertilityRate": 2.16,
   "medianAge": 29.3,

@@ -1,6 +1,7 @@
 {
   "code": "ARG",
   "name": "Argentina",
+  "dataYear": 2023,
   "population": 45696157,
   "totalFertilityRate": 1.5,
   "medianAge": 35.4,

@@ -1,10 +1,11 @@
 {
   "code": "TGO",
   "name": "Togo",
+  "dataYear": 2023,
   "population": 9515240,
   "totalFertilityRate": 4.19,
   "medianAge": 23.8,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 62.7,
   "crudeBirthRate": 31.1,
   "pyramid": {

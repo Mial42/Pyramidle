@@ -1,6 +1,7 @@
 {
   "code": "MLT",
   "name": "Malta",
+  "dataYear": 2023,
   "population": 574345,
   "totalFertilityRate": 1.06,
   "medianAge": 42.6,

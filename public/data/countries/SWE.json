@@ -1,6 +1,7 @@
 {
   "code": "SWE",
   "name": "Sweden",
+  "dataYear": 2023,
   "population": 10569705,
   "totalFertilityRate": 1.45,
   "medianAge": 41.6,

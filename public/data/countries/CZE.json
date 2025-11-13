@@ -1,6 +1,7 @@
 {
   "code": "CZE",
   "name": "Czechia",
+  "dataYear": 2023,
   "population": 10882165,
   "totalFertilityRate": 1.45,
   "medianAge": 42.6,

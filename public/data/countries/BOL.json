@@ -1,6 +1,7 @@
 {
   "code": "BOL",
   "name": "Bolivia",
+  "dataYear": 2023,
   "population": 12413315,
   "totalFertilityRate": 2.55,
   "medianAge": 28.5,

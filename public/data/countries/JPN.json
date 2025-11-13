@@ -1,6 +1,7 @@
 {
   "code": "JPN",
   "name": "Japan",
+  "dataYear": 2023,
   "population": 123975372,
   "totalFertilityRate": 1.2,
   "medianAge": 48.2,

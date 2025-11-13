@@ -1,6 +1,7 @@
 {
   "code": "POL",
   "name": "Poland",
+  "dataYear": 2023,
   "population": 36554705,
   "totalFertilityRate": 1.16,
   "medianAge": 42.3,

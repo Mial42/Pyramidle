@@ -1,6 +1,7 @@
 {
   "code": "ROU",
   "name": "Romania",
+  "dataYear": 2023,
   "population": 19069340,
   "totalFertilityRate": 1.71,
   "medianAge": 42.1,

@@ -1,6 +1,7 @@
 {
   "code": "ISL",
   "name": "Iceland",
+  "dataYear": 2023,
   "population": 404610,
   "totalFertilityRate": 1.59,
   "medianAge": 38.4,

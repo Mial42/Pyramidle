@@ -1,10 +1,11 @@
 {
   "code": "UGA",
   "name": "Uganda",
+  "dataYear": 2023,
   "population": 50015089,
   "totalFertilityRate": 4.28,
   "medianAge": 21.1,
-  "yearBirthsPeaked": 2023,
+  "yearBirthsPeaked": "Has not peaked yet",
   "lifeExpectancy": 68.3,
   "crudeBirthRate": 35.2,
   "pyramid": {

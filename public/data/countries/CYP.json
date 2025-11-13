@@ -1,6 +1,7 @@
 {
   "code": "CYP",
   "name": "Cyprus",
+  "dataYear": 2023,
   "population": 1358281,
   "totalFertilityRate": 1.39,
   "medianAge": 39.4,

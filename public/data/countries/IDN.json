@@ -1,6 +1,7 @@
 {
   "code": "IDN",
   "name": "Indonesia",
+  "dataYear": 2023,
   "population": 283487933,
   "totalFertilityRate": 2.13,
   "medianAge": 32.4,

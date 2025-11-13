@@ -1,12 +1,13 @@
 {
   "code": "ZWE",
   "name": "Zimbabwe",
+  "dataYear": 2023,
   "population": 16634375,
   "totalFertilityRate": 3.72,
   "medianAge": 23.1,
   "yearBirthsPeaked": 2012,
   "lifeExpectancy": 62.8,
-  "crudeBirthRate": 20.0,
+  "crudeBirthRate": 30.4,
   "pyramid": {
     "male": {
       "0-4": 1176460,

@@ -1,6 +1,7 @@
 {
   "code": "SAU",
   "name": "Saudi Arabia",
+  "dataYear": 2023,
   "population": 35300281,
   "totalFertilityRate": 2.28,
   "medianAge": 29.7,

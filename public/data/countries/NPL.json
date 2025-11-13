@@ -1,6 +1,7 @@
 {
   "code": "NPL",
   "name": "Nepal",
+  "dataYear": 2023,
   "population": 29651046,
   "totalFertilityRate": 1.98,
   "medianAge": 29.1,

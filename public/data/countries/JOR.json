@@ -1,6 +1,7 @@
 {
   "code": "JOR",
   "name": "Jordan",
+  "dataYear": 2023,
   "population": 11552876,
   "totalFertilityRate": 2.64,
   "medianAge": 27.9,

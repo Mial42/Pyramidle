@@ -1,10 +1,11 @@
 {
   "code": "LIE",
   "name": "Liechtenstein",
+  "dataYear": 2023,
   "population": 40197,
   "totalFertilityRate": 1.45,
   "medianAge": 43.5,
-  "yearBirthsPeaked": 2000,
+  "yearBirthsPeaked": 1997,
   "lifeExpectancy": 84.8,
   "crudeBirthRate": 9.1,
   "pyramid": {

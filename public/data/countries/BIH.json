@@ -1,6 +1,7 @@
 {
   "code": "BIH",
   "name": "Bosnia and Herzegovina",
+  "dataYear": 2023,
   "population": 3164252,
   "totalFertilityRate": 1.49,
   "medianAge": 44.4,

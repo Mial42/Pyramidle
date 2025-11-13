@@ -1,6 +1,7 @@
 {
   "code": "VNM",
   "name": "Viet Nam",
+  "dataYear": 2023,
   "population": 100987684,
   "totalFertilityRate": 1.91,
   "medianAge": 34.1,

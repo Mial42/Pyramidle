@@ -1,6 +1,7 @@
 {
   "code": "SLV",
   "name": "El Salvador",
+  "dataYear": 2023,
   "population": 6338193,
   "totalFertilityRate": 1.77,
   "medianAge": 31.3,

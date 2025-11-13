@@ -1,6 +1,7 @@
 {
   "code": "PER",
   "name": "Peru",
+  "dataYear": 2023,
   "population": 34217853,
   "totalFertilityRate": 1.98,
   "medianAge": 32.7,

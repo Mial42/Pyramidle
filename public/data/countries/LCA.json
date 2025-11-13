@@ -1,12 +1,13 @@
 {
   "code": "LCA",
   "name": "St. Lucia",
+  "dataYear": 2023,
   "population": 173829,
   "totalFertilityRate": 1.38,
   "medianAge": 34.5,
   "yearBirthsPeaked": 1960,
-  "lifeExpectancy": 70.0,
-  "crudeBirthRate": 20.0,
+  "lifeExpectancy": 72.7,
+  "crudeBirthRate": 11.3,
   "pyramid": {
     "male": {
       "0-4": 5128,
@@ -24,8 +25,8 @@
       "60-64": 4508,
       "65-69": 3163,
       "70-74": 1987,
-      "75-79": 0,
-      "80+": 0
+      "75-79": 1283,
+      "80+": 997
     },
     "female": {
       "0-4": 4989,
@@ -43,8 +44,8 @@
       "60-64": 4958,
       "65-69": 3659,
       "70-74": 2558,
-      "75-79": 0,
-      "80+": 0
+      "75-79": 1835,
+      "80+": 1803
     }
   }
 }

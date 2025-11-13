@@ -1,6 +1,7 @@
 {
   "code": "SMR",
   "name": "San Marino",
+  "dataYear": 2023,
   "population": 33979,
   "totalFertilityRate": 1.15,
   "medianAge": 45.8,

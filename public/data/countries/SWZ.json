@@ -1,6 +1,7 @@
 {
   "code": "SWZ",
   "name": "Eswatini",
+  "dataYear": 2023,
   "population": 1242825,
   "totalFertilityRate": 2.75,
   "medianAge": 26.0,

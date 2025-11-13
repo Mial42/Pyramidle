@@ -1,6 +1,7 @@
 {
   "code": "DMA",
   "name": "Dominica",
+  "dataYear": 2023,
   "population": 66205,
   "totalFertilityRate": 1.48,
   "medianAge": 37.8,

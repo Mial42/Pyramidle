@@ -1,6 +1,7 @@
 {
   "code": "IMN",
   "name": "Isle of Man",
+  "dataYear": 2023,
   "population": 84159,
   "totalFertilityRate": 1.55,
   "medianAge": 44.5,

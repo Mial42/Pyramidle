@@ -1,6 +1,7 @@
 {
   "code": "MNE",
   "name": "Montenegro",
+  "dataYear": 2023,
   "population": 623831,
   "totalFertilityRate": 1.74,
   "medianAge": 40.0,

@@ -1,10 +1,11 @@
 {
   "code": "PRI",
   "name": "Puerto Rico (US)",
+  "dataYear": 2023,
   "population": 3038625,
   "totalFertilityRate": 0.92,
   "medianAge": 43.4,
-  "yearBirthsPeaked": 2000,
+  "yearBirthsPeaked": 1965,
   "lifeExpectancy": 81.7,
   "crudeBirthRate": 5.8,
   "pyramid": {
@@ -25,7 +26,7 @@
       "65-69": 96030,
       "70-74": 83978,
       "80+": 87329,
-      "75-79": 0
+      "75-79": 71192
     },
     "female": {
       "0-4": 46429,
@@ -44,7 +45,7 @@
       "65-69": 118564,
       "70-74": 107228,
       "80+": 134013,
-      "75-79": 0
+      "75-79": 93479
     }
   }
 }

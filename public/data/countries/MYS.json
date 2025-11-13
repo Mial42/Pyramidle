@@ -1,6 +1,7 @@
 {
   "code": "MYS",
   "name": "Malaysia",
+  "dataYear": 2023,
   "population": 35557673,
   "totalFertilityRate": 1.55,
   "medianAge": 32.7,

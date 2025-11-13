@@ -1,6 +1,7 @@
 {
   "code": "AUT",
   "name": "Austria",
+  "dataYear": 2023,
   "population": 9178483,
   "totalFertilityRate": 1.32,
   "medianAge": 43.4,

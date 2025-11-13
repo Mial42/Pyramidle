@@ -1,6 +1,7 @@
 {
   "code": "COL",
   "name": "Colombia",
+  "dataYear": 2023,
   "population": 52886359,
   "totalFertilityRate": 1.65,
   "medianAge": 34.6,

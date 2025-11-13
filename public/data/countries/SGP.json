@@ -1,6 +1,7 @@
 {
   "code": "SGP",
   "name": "Singapore",
+  "dataYear": 2023,
   "population": 6036858,
   "totalFertilityRate": 0.97,
   "medianAge": 38.8,

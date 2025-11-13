@@ -1,6 +1,7 @@
 {
   "code": "GEO",
   "name": "Georgia",
+  "dataYear": 2023,
   "population": 3673852,
   "totalFertilityRate": 1.81,
   "medianAge": 38.2,

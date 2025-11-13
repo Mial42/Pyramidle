@@ -1,6 +1,7 @@
 {
   "code": "MCO",
   "name": "Monaco",
+  "dataYear": 2023,
   "population": 38633,
   "totalFertilityRate": 2.11,
   "medianAge": 50.0,

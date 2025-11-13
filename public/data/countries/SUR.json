@@ -1,6 +1,7 @@
 {
   "code": "SUR",
   "name": "Suriname",
+  "dataYear": 2023,
   "population": 634429,
   "totalFertilityRate": 2.25,
   "medianAge": 31.9,

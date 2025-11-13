@@ -1,6 +1,7 @@
 {
   "code": "ECU",
   "name": "Ecuador",
+  "dataYear": 2023,
   "population": 18135481,
   "totalFertilityRate": 1.82,
   "medianAge": 32.0,

@@ -1,6 +1,7 @@
 {
   "code": "CAN",
   "name": "Canada",
+  "dataYear": 2023,
   "population": 41288596,
   "totalFertilityRate": 1.26,
   "medianAge": 41.7,

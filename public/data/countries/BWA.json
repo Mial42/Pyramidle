@@ -1,6 +1,7 @@
 {
   "code": "BWA",
   "name": "Botswana",
+  "dataYear": 2023,
   "population": 2521140,
   "totalFertilityRate": 2.73,
   "medianAge": 26.2,

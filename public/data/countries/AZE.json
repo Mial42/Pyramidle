@@ -1,6 +1,7 @@
 {
   "code": "AZE",
   "name": "Azerbaijan",
+  "dataYear": 2023,
   "population": 10202848,
   "totalFertilityRate": 1.55,
   "medianAge": 34.4,
