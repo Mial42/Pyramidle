@@ -14,10 +14,11 @@ export interface PyramidData {
 export interface CountryData {
   code: string;
   name: string;
+  dataYear?: number; // Year of demographic data
   population: number;
   totalFertilityRate: number;
   medianAge: number;
-  yearBirthsPeaked: number;
+  yearBirthsPeaked: number | string; // Number for year, or "Has not peaked yet"
   lifeExpectancy: number;
   crudeBirthRate: number;
   pyramid: PyramidData;

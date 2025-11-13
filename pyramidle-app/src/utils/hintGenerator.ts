@@ -10,8 +10,11 @@ const formatMedianAge = (age: number): string => {
   return `${age.toFixed(1)} years`;
 };
 
-// Format births peak year hint - show exact value
-const formatBirthsPeak = (year: number): string => {
+// Format births peak year hint - show exact value or "Has not peaked yet"
+const formatBirthsPeak = (year: number | string): string => {
+  if (typeof year === 'string') {
+    return year; // Return as-is if it's already a string (e.g., "Has not peaked yet")
+  }
   return year.toString();
 };
 
