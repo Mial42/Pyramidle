@@ -21,6 +21,11 @@ export const useGameState = (
   const [gameStatus, setGameStatus] = useState<'playing' | 'won' | 'lost'>('playing');
   const [currentGuess, setCurrentGuess] = useState<number>(0);
 
+  // Update current country index when initialCountryIndex changes (e.g., when daily country is calculated)
+  useEffect(() => {
+    setCurrentCountryIndex(initialCountryIndex);
+  }, [initialCountryIndex]);
+
   // Update target country when index changes
   useEffect(() => {
     if (availableCountries.length > 0) {
