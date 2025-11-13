@@ -8,6 +8,7 @@ This directory contains scripts to download and process demographic data for all
 2. **`update_year_births_peaked.py`**: Updates year births peaked using actual births data
 3. **`fix_missing_data.py`**: Fixes country JSONs with missing or default values
 4. **`add_data_year.py`**: Adds dataYear field to existing country JSONs
+5. **`generate_rankings.py`**: Generates pre-calculated demographic rankings for all countries
 
 ## 1. Download Demographic Data
 
@@ -297,6 +298,58 @@ python scripts/add_data_year.py
 - After downloading data with older version of script
 - If you have country JSONs without `dataYear` field
 
+## 5. Generate Rankings
+
+The `generate_rankings.py` script creates pre-calculated demographic rankings for all countries.
+
+### Purpose
+
+The app uses rank-based distance calculation to determine how close a guess is to the target country on each metric. Instead of calculating these rankings in the browser (expensive), we pre-calculate them once and save as a static JSON file.
+
+**IMPORTANT**: This script must be run after any changes to country data files (after running download, update, or fix scripts).
+
+### Usage
+
+```bash
+python scripts/generate_rankings.py
+```
+
+The script will:
+1. Load all country JSON files from `pyramidle-app/public/data/countries/`
+2. Sort countries by each metric (population, TFR, median age, etc.)
+3. Save rankings to `pyramidle-app/public/data/rankings.json`
+
+### Output
+
+Creates `pyramidle-app/public/data/rankings.json` with sorted lists:
+
+```json
+{
+  "population": [
+    {"code": "VAT", "value": 825},
+    {"code": "NRU", "value": 12668},
+    ...
+  ],
+  "tfr": [...],
+  "medianAge": [...],
+  "yearsBeforePeak": [...],
+  "lifeExpectancy": [...],
+  "cbr": [...]
+}
+```
+
+Each list is sorted by value (lowest to highest), and the app uses these to calculate rank distances.
+
+### When to Run
+
+Run this script:
+- After downloading new country data
+- After updating any country data files
+- After fixing missing data
+- Whenever country JSONs change
+
+The rankings are loaded by the React app and used for all distance calculations in the share results feature.
+
 ## Complete Workflow
 
 ```bash
@@ -311,4 +364,7 @@ python scripts/update_year_births_peaked.py --file births_data.csv
 
 # Step 4 (optional): Add dataYear if missing
 python scripts/add_data_year.py
+
+# Step 5: REQUIRED - Generate rankings for the app
+python scripts/generate_rankings.py
 ```

@@ -7,7 +7,7 @@ import { TestModeControls } from './components/TestModeControls';
 import { ShareResults } from './components/ShareResults';
 import { useGameState } from './hooks/useGameState';
 import { selectDailyCountry } from './utils/dailyCountry';
-import { calculateDemographicRankings, calculateGuessSquares } from './utils/demographicDistance';
+import { calculateGuessSquares, type DemographicRankings } from './utils/demographicDistance';
 import './App.css';
 
 const isTestMode = import.meta.env.VITE_TEST_MODE === 'true';
@@ -27,11 +27,12 @@ const getTodayDateString = (): string => {
 function App() {
   const [countries, setCountries] = useState<CountryData[]>([]);
   const [countryList, setCountryList] = useState<Array<{ code: string; name: string }>>([]);
+  const [rankings, setRankings] = useState<DemographicRankings | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [guessSquares, setGuessSquares] = useState<string[]>([]);
 
-  // Load country data
+  // Load country data and rankings
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -39,6 +40,11 @@ function App() {
         const listResponse = await fetch('/data/countries.json');
         const list = await listResponse.json();
         setCountryList(list);
+
+        // Load pre-calculated rankings
+        const rankingsResponse = await fetch('/data/rankings.json');
+        const loadedRankings = await rankingsResponse.json();
+        setRankings(loadedRankings);
 
         // Load all country data
         const countryDataPromises = list.map(async (country: { code: string }) => {
@@ -66,11 +72,6 @@ function App() {
     return selectDailyCountry(countries);
   }, [countries]);
 
-  // Calculate demographic rankings for distance calculation
-  const demographicRankings = useMemo(() => {
-    return calculateDemographicRankings(countries);
-  }, [countries]);
-
   const {
     targetCountry,
     guesses,
@@ -83,16 +84,16 @@ function App() {
 
   // Calculate squares for each guess
   useEffect(() => {
-    if (!targetCountry || countries.length === 0) return;
+    if (!targetCountry || countries.length === 0 || !rankings) return;
 
     const squares = guesses.map(guessCode => {
       const guessCountry = countries.find(c => c.code === guessCode);
       if (!guessCountry) return '🟥🟥🟥🟥🟥🟥';
-      return calculateGuessSquares(guessCountry, targetCountry, demographicRankings);
+      return calculateGuessSquares(guessCountry, targetCountry, rankings);
     });
 
     setGuessSquares(squares);
-  }, [guesses, targetCountry, countries, demographicRankings]);
+  }, [guesses, targetCountry, countries, rankings]);
 
   // Reset squares when game resets
   useEffect(() => {
