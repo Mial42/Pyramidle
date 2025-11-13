@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { CountryData } from './types';
 import { PopulationPyramid } from './components/PopulationPyramid';
 import { CountryInput } from './components/CountryInput';
 import { GuessGrid } from './components/GuessGrid';
-import { TestModeControls } from './components/TestModeControls';
+// import { TestModeControls } from './components/TestModeControls';
 import { useGameState } from './hooks/useGameState';
+import { selectDailyCountry } from './utils/dailyCountry';
 import './App.css';
 
 function App() {
@@ -41,15 +42,22 @@ function App() {
     loadData();
   }, []);
 
+  // Select today's country (same for all users, changes daily)
+  // Weighted by log-population with 100M cap to avoid always selecting largest countries
+  const dailyCountryIndex = useMemo(() => {
+    if (countries.length === 0) return 0;
+    return selectDailyCountry(countries);
+  }, [countries]);
+
   const {
     targetCountry,
     guesses,
     hintsRevealed,
     gameStatus,
     makeGuess,
-    resetGame,
-    nextCountry,
-  } = useGameState(countries, 0);
+    // resetGame, // Only needed for test mode
+    // nextCountry, // Only needed for test mode
+  } = useGameState(countries, dailyCountryIndex);
 
   if (loading) {
     return (
