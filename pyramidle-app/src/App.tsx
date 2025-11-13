@@ -4,17 +4,32 @@ import { PopulationPyramid } from './components/PopulationPyramid';
 import { CountryInput } from './components/CountryInput';
 import { GuessGrid } from './components/GuessGrid';
 import { TestModeControls } from './components/TestModeControls';
+import { ShareResults } from './components/ShareResults';
 import { useGameState } from './hooks/useGameState';
 import { selectDailyCountry } from './utils/dailyCountry';
+import { calculateDemographicRanges, calculateGuessSquares } from './utils/demographicDistance';
 import './App.css';
 
 const isTestMode = import.meta.env.VITE_TEST_MODE === 'true';
+
+/**
+ * Get current date in YYYY-MM-DD format (UTC)
+ * Uses same UTC-based date as daily country selection
+ */
+const getTodayDateString = (): string => {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(now.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 function App() {
   const [countries, setCountries] = useState<CountryData[]>([]);
   const [countryList, setCountryList] = useState<Array<{ code: string; name: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [guessSquares, setGuessSquares] = useState<string[]>([]);
 
   // Load country data
   useEffect(() => {
@@ -51,6 +66,11 @@ function App() {
     return selectDailyCountry(countries);
   }, [countries]);
 
+  // Calculate demographic ranges for distance calculation
+  const demographicRanges = useMemo(() => {
+    return calculateDemographicRanges(countries);
+  }, [countries]);
+
   const {
     targetCountry,
     guesses,
@@ -60,6 +80,26 @@ function App() {
     resetGame,
     nextCountry,
   } = useGameState(countries, dailyCountryIndex);
+
+  // Calculate squares for each guess
+  useEffect(() => {
+    if (!targetCountry || countries.length === 0) return;
+
+    const squares = guesses.map(guessCode => {
+      const guessCountry = countries.find(c => c.code === guessCode);
+      if (!guessCountry) return '⬜⬜⬜⬜⬜⬜';
+      return calculateGuessSquares(guessCountry, targetCountry, demographicRanges);
+    });
+
+    setGuessSquares(squares);
+  }, [guesses, targetCountry, countries, demographicRanges]);
+
+  // Reset squares when game resets
+  useEffect(() => {
+    if (guesses.length === 0) {
+      setGuessSquares([]);
+    }
+  }, [guesses.length]);
 
   if (loading) {
     return (
@@ -150,6 +190,15 @@ function App() {
         }}>
           Game Over! The country was {countryNames[targetCountry.code]}.
         </div>
+      )}
+
+      {/* Share Results - Show when game ends */}
+      {(gameStatus === 'won' || gameStatus === 'lost') && guessSquares.length > 0 && (
+        <ShareResults
+          date={getTodayDateString()}
+          guessCount={gameStatus === 'won' ? guesses.length : 'X'}
+          squares={guessSquares}
+        />
       )}
 
       {/* Population Pyramid */}
