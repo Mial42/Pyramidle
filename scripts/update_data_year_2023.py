@@ -68,7 +68,7 @@ def main():
     print()
 
     # Find country JSON files
-    countries_dir = Path(__file__).parent.parent / 'public' / 'data' / 'countries'
+    countries_dir = Path(__file__).parent.parent / 'pyramidle-app' / 'public' / 'data' / 'countries'
 
     if not countries_dir.exists():
         print(f"Error: Countries directory not found at {countries_dir}")

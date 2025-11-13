@@ -319,7 +319,7 @@ def main():
     print("=" * 60)
 
     # Create output directories
-    output_dir = Path("public/data/countries")
+    output_dir = Path("pyramidle-app/public/data/countries")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Get list of countries
@@ -366,7 +366,7 @@ def main():
     country_list.sort(key=lambda x: x['code'])
 
     # Save country list
-    countries_file = Path("public/data/countries.json")
+    countries_file = Path("pyramidle-app/public/data/countries.json")
     with open(countries_file, 'w', encoding='utf-8') as f:
         json.dump(country_list, f, indent=2, ensure_ascii=False)
 
