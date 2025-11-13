@@ -1,73 +1,107 @@
-# React + TypeScript + Vite
+# Pyramidle
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Wordle-style game for guessing countries from their population pyramids.
 
-Currently, two official plugins are available:
+## Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Running the App
 
-## React Compiler
+There are two development modes available:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+#### User Mode (Production View)
+```bash
+npm run dev
+# or
+npm run dev:user
+```
+- Runs on **http://localhost:5173**
+- Shows the production view (no test controls)
+- Same experience as end users will see
 
-## Expanding the ESLint configuration
+#### Test Mode (Developer View)
+```bash
+npm run dev:test
+```
+- Runs on **http://localhost:5174**
+- Shows test mode controls for cycling through countries
+- Yellow banner at top indicates test mode
+- Use this for testing and development
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Running Both Modes Simultaneously
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+You can run both modes at the same time in separate terminals:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+```bash
+# Terminal 1 - User view
+npm run dev:user
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Terminal 2 - Test view
+npm run dev:test
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Then visit:
+- User mode: http://localhost:5173
+- Test mode: http://localhost:5174
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Environment Variables
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The app uses Vite environment variables:
+
+- `.env` - Default environment (user mode)
+- `.env.test` - Test mode environment
+- `.env.local` - Local overrides (gitignored)
+
+Current variables:
+- `VITE_TEST_MODE` - Set to `true` to enable test controls
+
+## Building
+
+```bash
+npm run build
 ```
+
+Builds the production version to the `dist/` directory.
+
+## Project Structure
+
+```
+pyramidle-app/
+├── public/
+│   └── data/
+│       ├── countries.json       # List of all countries
+│       └── countries/           # Individual country data files
+│           ├── USA.json
+│           ├── CHN.json
+│           └── ...
+├── src/
+│   ├── components/              # React components
+│   ├── hooks/                   # Custom React hooks
+│   ├── types/                   # TypeScript type definitions
+│   ├── utils/                   # Utility functions
+│   │   ├── dailyCountry.ts     # Daily country selection logic
+│   │   └── hintGenerator.ts    # Progressive hint system
+│   └── App.tsx                  # Main application component
+├── .env                         # User mode environment
+├── .env.test                    # Test mode environment
+└── package.json
+```
+
+## Game Mechanics
+
+- **Daily Challenge**: Everyone gets the same country each day (changes at UTC midnight)
+- **Country Selection**: Weighted by log(min(population, 100M)) to balance variety
+- **6 Guesses**: Players have 6 attempts to guess the correct country
+- **Progressive Hints**: After each incorrect guess, a new hint is revealed:
+  1. Total Fertility Rate (TFR)
+  2. Median Age
+  3. Year Births Peaked
+  4. Life Expectancy
+  5. Crude Birth Rate (CBR)
+
+## Data Sources
+
+- Population pyramids: World Bank Open Data API
+- Demographic indicators: World Bank
+- Births data: UN World Population Prospects 2024 (via Our World in Data)
+
+Data year: 2023 for most countries

@@ -3,10 +3,12 @@ import type { CountryData } from './types';
 import { PopulationPyramid } from './components/PopulationPyramid';
 import { CountryInput } from './components/CountryInput';
 import { GuessGrid } from './components/GuessGrid';
-// import { TestModeControls } from './components/TestModeControls';
+import { TestModeControls } from './components/TestModeControls';
 import { useGameState } from './hooks/useGameState';
 import { selectDailyCountry } from './utils/dailyCountry';
 import './App.css';
+
+const isTestMode = import.meta.env.VITE_TEST_MODE === 'true';
 
 function App() {
   const [countries, setCountries] = useState<CountryData[]>([]);
@@ -55,8 +57,8 @@ function App() {
     hintsRevealed,
     gameStatus,
     makeGuess,
-    // resetGame, // Only needed for test mode
-    // nextCountry, // Only needed for test mode
+    resetGame,
+    nextCountry,
   } = useGameState(countries, dailyCountryIndex);
 
   if (loading) {
@@ -91,6 +93,22 @@ function App() {
 
   return (
     <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Test Mode Banner */}
+      {isTestMode && (
+        <div style={{
+          textAlign: 'center',
+          padding: '10px',
+          backgroundColor: '#fff3cd',
+          border: '2px solid #ffc107',
+          borderRadius: '8px',
+          marginBottom: '20px',
+          color: '#856404',
+          fontWeight: 'bold',
+        }}>
+          🔧 TEST MODE - Port 5174
+        </div>
+      )}
+
       <header style={{ textAlign: 'center', marginBottom: '30px' }}>
         <h1 style={{ fontSize: '48px', margin: '20px 0 10px' }}>🌍 Pyramidle</h1>
         <p style={{ fontSize: '18px', color: '#666' }}>
@@ -156,13 +174,14 @@ function App() {
         maxGuesses={6}
       />
 
-      {/* Test Mode Controls - Uncomment to enable test mode
-      <TestModeControls
-        onNextCountry={nextCountry}
-        onReset={resetGame}
-        gameStatus={gameStatus}
-      />
-      */}
+      {/* Test Mode Controls - Only visible in test mode (npm run dev:test) */}
+      {isTestMode && (
+        <TestModeControls
+          onNextCountry={nextCountry}
+          onReset={resetGame}
+          gameStatus={gameStatus}
+        />
+      )}
 
       <footer style={{ textAlign: 'center', marginTop: '50px', color: '#999', fontSize: '14px' }}>
         <p>Inspired by <a href="https://oec.world/en/games/tradle" target="_blank" rel="noopener noreferrer">Tradle</a></p>

@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 5173",
+    "dev:user": "vite --port 5173",
+    "dev:test": "vite --port 5174 --mode test",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
