@@ -204,6 +204,9 @@ The `fix_missing_data.py` script fixes country JSON files that have missing or d
 
 1. **Age pyramid values of 0**: Sometimes the API fails to return data for specific age groups, resulting in 0 values
 2. **yearBirthsPeaked = 2000**: When the births peak calculation fails, it defaults to 2000
+3. **totalFertilityRate = 2.1**: Default value when TFR data is unavailable
+4. **lifeExpectancy = 70.0**: Default value when life expectancy data is unavailable
+5. **crudeBirthRate = 20.0**: Default value when CBR data is unavailable
 
 ### Why This Happens
 
@@ -228,12 +231,13 @@ python scripts/fix_missing_data.py
    ```
    Found 12 files with issues
      France (FRA): 1 missing age groups
-     Afghanistan (AFG): default births peak year
-     Somalia (SOM): 3 missing age groups, default births peak year
+     Afghanistan (AFG): default births peak year, default life expectancy
+     Somalia (SOM): 3 missing age groups, default births peak year, default TFR
    ```
 
 3. **Fixes each issue**:
    - Re-fetches only the missing age group data from World Bank API
+   - Re-fetches TFR, life expectancy, and CBR if they have default values
    - Re-calculates yearBirthsPeaked if it's 2000
    - Updates the JSON file with corrected values
    - Preserves all other data unchanged
@@ -246,9 +250,17 @@ France (FRA):
     Fetching 70-74... ✓ Fixed (M: 1,545,892, F: 1,789,234)
 
 Afghanistan (AFG):
+  Life expectancy is default (70.0), refetching...
+    ✓ Updated to 63.2
   Year births peaked is default (2000), recalculating...
     Fetching historical births data...
     ✓ Updated to 2018
+
+Somalia (SOM):
+  Total fertility rate is default (2.1), refetching...
+    ✓ Updated to 6.12
+  Crude birth rate is default (20.0), refetching...
+    ✓ Updated to 42.5
 ```
 
 ### When to Use

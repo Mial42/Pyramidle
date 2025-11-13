@@ -5,6 +5,9 @@ Fix country JSON files with missing or default values by retrying API calls.
 Fixes:
 - Age pyramid values that are 0 (missing data)
 - yearBirthsPeaked that is 2000 (default fallback)
+- totalFertilityRate that is 2.1 (default fallback)
+- lifeExpectancy that is 70.0 (default fallback)
+- crudeBirthRate that is 20.0 (default fallback)
 
 Only makes API calls for the specific missing values, not full re-download.
 
@@ -121,15 +124,21 @@ def get_year_births_peaked(country_code: str) -> Optional[int]:
         print(f"    Error calculating births peak: {e}")
         return None
 
-def check_for_issues(data: Dict) -> Tuple[List[str], bool]:
+def check_for_issues(data: Dict) -> Dict:
     """
     Check a country JSON for missing data.
 
     Returns:
-        Tuple of (list of missing age groups, whether yearBirthsPeaked needs fixing)
+        Dict with keys: missing_age_groups (list), fix_births_peaked (bool),
+        fix_tfr (bool), fix_life_exp (bool), fix_cbr (bool)
     """
-    missing_age_groups = []
-    fix_births_peaked = False
+    issues = {
+        'missing_age_groups': [],
+        'fix_births_peaked': False,
+        'fix_tfr': False,
+        'fix_life_exp': False,
+        'fix_cbr': False
+    }
 
     # Check for 0 values in pyramid
     pyramid = data.get('pyramid', {})
@@ -137,14 +146,26 @@ def check_for_issues(data: Dict) -> Tuple[List[str], bool]:
         if gender in pyramid:
             for age_group, value in pyramid[gender].items():
                 if value == 0:
-                    if age_group not in missing_age_groups:
-                        missing_age_groups.append(age_group)
+                    if age_group not in issues['missing_age_groups']:
+                        issues['missing_age_groups'].append(age_group)
 
     # Check for default yearBirthsPeaked
     if data.get('yearBirthsPeaked') == 2000:
-        fix_births_peaked = True
+        issues['fix_births_peaked'] = True
 
-    return (missing_age_groups, fix_births_peaked)
+    # Check for default totalFertilityRate
+    if data.get('totalFertilityRate') == 2.1:
+        issues['fix_tfr'] = True
+
+    # Check for default lifeExpectancy
+    if data.get('lifeExpectancy') == 70.0:
+        issues['fix_life_exp'] = True
+
+    # Check for default crudeBirthRate
+    if data.get('crudeBirthRate') == 20.0:
+        issues['fix_cbr'] = True
+
+    return issues
 
 def fix_country_data(json_path: Path) -> bool:
     """Fix missing data in a country JSON file."""
@@ -157,9 +178,18 @@ def fix_country_data(json_path: Path) -> bool:
         country_name = data['name']
 
         # Check for issues
-        missing_age_groups, fix_births_peaked = check_for_issues(data)
+        issues = check_for_issues(data)
 
-        if not missing_age_groups and not fix_births_peaked:
+        # Check if there are any issues
+        has_issues = (
+            len(issues['missing_age_groups']) > 0 or
+            issues['fix_births_peaked'] or
+            issues['fix_tfr'] or
+            issues['fix_life_exp'] or
+            issues['fix_cbr']
+        )
+
+        if not has_issues:
             return False  # No issues found
 
         print(f"\n{country_name} ({country_code}):")
@@ -167,10 +197,10 @@ def fix_country_data(json_path: Path) -> bool:
         fixed_something = False
 
         # Fix missing age groups
-        if missing_age_groups:
-            print(f"  Missing age groups: {', '.join(missing_age_groups)}")
+        if issues['missing_age_groups']:
+            print(f"  Missing age groups: {', '.join(issues['missing_age_groups'])}")
 
-            for age_group in missing_age_groups:
+            for age_group in issues['missing_age_groups']:
                 if age_group not in WB_AGE_INDICATORS:
                     print(f"    Warning: Unknown age group {age_group}")
                     continue
@@ -189,8 +219,41 @@ def fix_country_data(json_path: Path) -> bool:
                 else:
                     print(f"✗ Still unavailable")
 
+        # Fix totalFertilityRate
+        if issues['fix_tfr']:
+            print(f"  Total fertility rate is default (2.1), refetching...")
+            tfr = fetch_indicator_data(country_code, 'SP.DYN.TFRT.IN')
+            if tfr is not None and tfr != 2.1:
+                data['totalFertilityRate'] = round(tfr, 2)
+                print(f"    ✓ Updated to {round(tfr, 2)}")
+                fixed_something = True
+            else:
+                print(f"    ✗ Still unavailable (keeping 2.1)")
+
+        # Fix lifeExpectancy
+        if issues['fix_life_exp']:
+            print(f"  Life expectancy is default (70.0), refetching...")
+            life_exp = fetch_indicator_data(country_code, 'SP.DYN.LE00.IN')
+            if life_exp is not None and life_exp != 70.0:
+                data['lifeExpectancy'] = round(life_exp, 1)
+                print(f"    ✓ Updated to {round(life_exp, 1)}")
+                fixed_something = True
+            else:
+                print(f"    ✗ Still unavailable (keeping 70.0)")
+
+        # Fix crudeBirthRate
+        if issues['fix_cbr']:
+            print(f"  Crude birth rate is default (20.0), refetching...")
+            cbr = fetch_indicator_data(country_code, 'SP.DYN.CBRT.IN')
+            if cbr is not None and cbr != 20.0:
+                data['crudeBirthRate'] = round(cbr, 1)
+                print(f"    ✓ Updated to {round(cbr, 1)}")
+                fixed_something = True
+            else:
+                print(f"    ✗ Still unavailable (keeping 20.0)")
+
         # Fix yearBirthsPeaked
-        if fix_births_peaked:
+        if issues['fix_births_peaked']:
             print(f"  Year births peaked is default (2000), recalculating...")
             year_peaked = get_year_births_peaked(country_code)
 
@@ -240,17 +303,32 @@ def main():
             with open(json_file, 'r') as f:
                 data = json.load(f)
 
-            missing_age_groups, fix_births_peaked = check_for_issues(data)
+            issues_found = check_for_issues(data)
 
-            if missing_age_groups or fix_births_peaked:
-                issues = []
-                if missing_age_groups:
-                    issues.append(f"{len(missing_age_groups)} missing age groups")
-                if fix_births_peaked:
-                    issues.append("default births peak year")
+            # Check if there are any issues
+            has_issues = (
+                len(issues_found['missing_age_groups']) > 0 or
+                issues_found['fix_births_peaked'] or
+                issues_found['fix_tfr'] or
+                issues_found['fix_life_exp'] or
+                issues_found['fix_cbr']
+            )
+
+            if has_issues:
+                issue_list = []
+                if issues_found['missing_age_groups']:
+                    issue_list.append(f"{len(issues_found['missing_age_groups'])} missing age groups")
+                if issues_found['fix_births_peaked']:
+                    issue_list.append("default births peak year")
+                if issues_found['fix_tfr']:
+                    issue_list.append("default TFR")
+                if issues_found['fix_life_exp']:
+                    issue_list.append("default life expectancy")
+                if issues_found['fix_cbr']:
+                    issue_list.append("default CBR")
 
                 files_with_issues.append(json_file)
-                print(f"  {data['name']} ({data['code']}): {', '.join(issues)}")
+                print(f"  {data['name']} ({data['code']}): {', '.join(issue_list)}")
 
         except Exception as e:
             print(f"  Error reading {json_file}: {e}")
