@@ -148,12 +148,13 @@ function App() {
         maxGuesses={6}
       />
 
-      {/* Test Mode Controls */}
+      {/* Test Mode Controls - Uncomment to enable test mode
       <TestModeControls
         onNextCountry={nextCountry}
         onReset={resetGame}
         gameStatus={gameStatus}
       />
+      */}
 
       <footer style={{ textAlign: 'center', marginTop: '50px', color: '#999', fontSize: '14px' }}>
         <p>Inspired by <a href="https://oec.world/en/games/tradle" target="_blank" rel="noopener noreferrer">Tradle</a></p>
