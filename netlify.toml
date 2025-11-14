@@ -1,0 +1,20 @@
+# Netlify Build Configuration
+[build]
+  # Base directory where the React app is located
+  base = "pyramidle-app"
+
+  # Command to build the production bundle
+  command = "npm run build"
+
+  # Directory to deploy (Vite outputs to dist)
+  publish = "dist"
+
+# Redirect all requests to index.html for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Environment variables for build (if needed in future)
+# [build.environment]
+#   NODE_VERSION = "18"
