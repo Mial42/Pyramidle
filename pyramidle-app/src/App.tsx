@@ -31,6 +31,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [guessSquares, setGuessSquares] = useState<string[]>([]);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Load country data and rankings
   useEffect(() => {
@@ -99,8 +100,16 @@ function App() {
   useEffect(() => {
     if (guesses.length === 0) {
       setGuessSquares([]);
+      setShowShareModal(false);
     }
   }, [guesses.length]);
+
+  // Show share modal when game ends
+  useEffect(() => {
+    if ((gameStatus === 'won' || gameStatus === 'lost') && guessSquares.length > 0) {
+      setShowShareModal(true);
+    }
+  }, [gameStatus, guessSquares.length]);
 
   if (loading) {
     return (
@@ -174,6 +183,25 @@ function App() {
           fontWeight: 'bold',
         }}>
           🎉 Congratulations! You guessed {countryNames[targetCountry.code]} in {guesses.length} {guesses.length === 1 ? 'guess' : 'guesses'}!
+          {!showShareModal && guessSquares.length > 0 && (
+            <div style={{ marginTop: '12px' }}>
+              <button
+                onClick={() => setShowShareModal(true)}
+                style={{
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                }}
+              >
+                View Results
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -190,15 +218,35 @@ function App() {
           fontWeight: 'bold',
         }}>
           Game Over! The country was {countryNames[targetCountry.code]}.
+          {!showShareModal && guessSquares.length > 0 && (
+            <div style={{ marginTop: '12px' }}>
+              <button
+                onClick={() => setShowShareModal(true)}
+                style={{
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                }}
+              >
+                View Results
+              </button>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Share Results - Show when game ends */}
-      {(gameStatus === 'won' || gameStatus === 'lost') && guessSquares.length > 0 && (
+      {/* Share Results Modal - Show when game ends */}
+      {showShareModal && (gameStatus === 'won' || gameStatus === 'lost') && guessSquares.length > 0 && (
         <ShareResults
           date={getTodayDateString()}
           guessCount={gameStatus === 'won' ? guesses.length : 'X'}
           squares={guessSquares}
+          onClose={() => setShowShareModal(false)}
         />
       )}
 
