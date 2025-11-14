@@ -183,25 +183,6 @@ function App() {
           fontWeight: 'bold',
         }}>
           🎉 Congratulations! You guessed {countryNames[targetCountry.code]} in {guesses.length} {guesses.length === 1 ? 'guess' : 'guesses'}!
-          {!showShareModal && guessSquares.length > 0 && (
-            <div style={{ marginTop: '12px' }}>
-              <button
-                onClick={() => setShowShareModal(true)}
-                style={{
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  padding: '8px 16px',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}
-              >
-                View Results
-              </button>
-            </div>
-          )}
         </div>
       )}
 
@@ -218,25 +199,6 @@ function App() {
           fontWeight: 'bold',
         }}>
           Game Over! The country was {countryNames[targetCountry.code]}.
-          {!showShareModal && guessSquares.length > 0 && (
-            <div style={{ marginTop: '12px' }}>
-              <button
-                onClick={() => setShowShareModal(true)}
-                style={{
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  padding: '8px 16px',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}
-              >
-                View Results
-              </button>
-            </div>
-          )}
         </div>
       )}
 
