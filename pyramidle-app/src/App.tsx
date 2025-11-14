@@ -5,6 +5,7 @@ import { CountryInput } from './components/CountryInput';
 import { GuessGrid } from './components/GuessGrid';
 import { TestModeControls } from './components/TestModeControls';
 import { ShareResults } from './components/ShareResults';
+import { ShareResultsInline } from './components/ShareResultsInline';
 import { useGameState } from './hooks/useGameState';
 import { selectDailyCountry } from './utils/dailyCountry';
 import { calculateGuessSquares, type DemographicRankings } from './utils/demographicDistance';
@@ -200,6 +201,15 @@ function App() {
         }}>
           Game Over! The country was {countryNames[targetCountry.code]}.
         </div>
+      )}
+
+      {/* Share Results - Inline display at top */}
+      {(gameStatus === 'won' || gameStatus === 'lost') && guessSquares.length > 0 && (
+        <ShareResultsInline
+          date={getTodayDateString()}
+          guessCount={gameStatus === 'won' ? guesses.length : 'X'}
+          squares={guessSquares}
+        />
       )}
 
       {/* Share Results Modal - Show when game ends */}
