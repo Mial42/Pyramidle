@@ -5,6 +5,7 @@ import { CountryInput } from './components/CountryInput';
 import { GuessGrid } from './components/GuessGrid';
 import { TestModeControls } from './components/TestModeControls';
 import { ShareResults } from './components/ShareResults';
+import { ShareResultsInline } from './components/ShareResultsInline';
 import { useGameState } from './hooks/useGameState';
 import { selectDailyCountry } from './utils/dailyCountry';
 import { calculateGuessSquares, type DemographicRankings } from './utils/demographicDistance';
@@ -31,6 +32,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [guessSquares, setGuessSquares] = useState<string[]>([]);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Load country data and rankings
   useEffect(() => {
@@ -99,8 +101,16 @@ function App() {
   useEffect(() => {
     if (guesses.length === 0) {
       setGuessSquares([]);
+      setShowShareModal(false);
     }
   }, [guesses.length]);
+
+  // Show share modal when game ends
+  useEffect(() => {
+    if ((gameStatus === 'won' || gameStatus === 'lost') && guessSquares.length > 0) {
+      setShowShareModal(true);
+    }
+  }, [gameStatus, guessSquares.length]);
 
   if (loading) {
     return (
@@ -193,12 +203,22 @@ function App() {
         </div>
       )}
 
-      {/* Share Results - Show when game ends */}
+      {/* Share Results - Inline display at top */}
       {(gameStatus === 'won' || gameStatus === 'lost') && guessSquares.length > 0 && (
+        <ShareResultsInline
+          date={getTodayDateString()}
+          guessCount={gameStatus === 'won' ? guesses.length : 'X'}
+          squares={guessSquares}
+        />
+      )}
+
+      {/* Share Results Modal - Show when game ends */}
+      {showShareModal && (gameStatus === 'won' || gameStatus === 'lost') && guessSquares.length > 0 && (
         <ShareResults
           date={getTodayDateString()}
           guessCount={gameStatus === 'won' ? guesses.length : 'X'}
           squares={guessSquares}
+          onClose={() => setShowShareModal(false)}
         />
       )}
 
